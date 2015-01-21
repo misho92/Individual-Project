@@ -1,0 +1,6 @@
+install pip
+pip Flask
+easy_install Flask-HTTPAuth
+
+
+start server - python system.py
