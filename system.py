@@ -68,6 +68,11 @@ def signout():
 def main():
     return send_file("main.html")
 	
+@app.route("/header")
+@auth.login_required
+def header():
+    return send_file("header.html")
+	
 @app.route("/<id>")
 @auth.login_required
 def student(id):

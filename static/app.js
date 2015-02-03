@@ -47,6 +47,12 @@ app.factory("Account", ["$resource", function($resource) {
 	}]);
 
 app.controller("AppointmentController",["$scope","$window", "Appointment", function ($scope,$window,Appointment){
+
+	$scope.go = function(param){
+		if(param === "app") $window.location.href = "/appointments";
+		else if(param === "account" ) $window.location.href = "/myaccount";
+		else $window.location.href = "/";  
+	};
 	
 	$scope.birthDate = '2013-07-23';
         $scope.dateOptions = {
@@ -96,6 +102,12 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", funct
 
 app.controller("AccountController",["$scope","$window", "Account", function ($scope,$window,Account){
 	
+	$scope.go = function(param){
+		if(param === "app") $window.location.href = "/appointments";
+		else if(param === "account" ) $window.location.href = "/myaccount";
+		else $window.location.href = "/";  
+	};
+	
 	Account.get(function(items){
 		$scope.username = items.username[0] + " " + items.username[1];
 		$scope.title = items.user[0];
@@ -108,6 +120,13 @@ app.controller("AccountController",["$scope","$window", "Account", function ($sc
 }])
 
 app.controller("DataController",["$scope","$window", "$location", "Data", function ($scope,$window,$location,Data){
+
+	$scope.go = function(param){
+		if(param === "app") $window.location.href = "/appointments";
+		else if(param === "account" ) $window.location.href = "/myaccount";
+		else $window.location.href = "/";  
+	};
+	
 	$scope.isCollapsed1 = $scope.isCollapsed2 = $scope.isCollapsed3 = $scope.isCollapsed4 = true;
 	id = $location.$$path.slice(1,8);
 	Data.get({id:id},function(items){
@@ -121,6 +140,14 @@ app.controller("DataController",["$scope","$window", "$location", "Data", functi
 	})
 }])
 app.controller("MainController",["$scope","$window","Students", function ($scope,$window,Students) {
+
+	$scope.go = function(param){
+		if(param === "app") $window.location.href = "/appointments";
+		else if(param === "account" ) $window.location.href = "/myaccount";
+		else $window.location.href = "/";  
+	};
+	
+	$scope.header = {name: "header.html", url: "header.html"};
 	Students.get(function(items){
 		$scope.students = items.students;
 		$scope.username = items.username[0] + " " + items.username[1];

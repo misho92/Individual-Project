@@ -12,18 +12,7 @@
 	<body>
 		<div class="row" id="division">
 		    <form ng-controller="AccountController">
-			    <div class="navbar navbar-inverse navbar-fixed-top">
-				    <div class="navbar-inner">
-					    <div class="container-fluid">
-						    <p class="navbar-text pull-right">
-						    	<a href ="../"> Home </a>
-							    <a href="../appointments"> My Appointments</a>
-							   	<a id="link" href="../myaccount">Hi, {{username}}</a>
-							   	<a href="../signout" class="btn-small btn-primary" ng-click="signout()"> Sign out</a>
-						    </p>
-					    </div>
-				    </div>
-			    </div>
+			    <div data-ng-include="'header'"></div>
 				<h1 align="center"> My Account </h1>
 				<p><input class="span4" type="text" ng-model="title" size="10" readonly></p>
 				<p><input class="span4" type="text" ng-model="first_name" size="10" readonly></p>
