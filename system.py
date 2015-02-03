@@ -14,7 +14,7 @@ app.config.from_envvar("FLASKR_SETTINGS",silent=True)
 
 # add url rules with the corresponding view and method
 app.add_url_rule("/signin", view_func=Signin.as_view("Signin"), methods=["POST"])
-app.add_url_rule("/appointment", view_func=Appointment.as_view("Appointment"), methods=["GET"])
+app.add_url_rule("/appointment", view_func=Appointment.as_view("Appointment"), methods=["GET","POST","PUT","DELETE"])
 app.add_url_rule("/account", view_func=Account.as_view("Account"), methods=["GET"])
 app.add_url_rule("/students", view_func=Students.as_view("Students"), methods=["GET"])
 app.add_url_rule("/<int:id>", view_func=Data.as_view("Data"), methods=["GET"])

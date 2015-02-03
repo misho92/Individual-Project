@@ -1,5 +1,5 @@
 //app settings for routing and declaring which html file to invoke when a give url is entered and which controller is in charge
-var app = angular.module("app",["ngRoute","ngResource"])
+var app = angular.module("app",["ngRoute","ngResource","ui.bootstrap"])
 .config(["$routeProvider","$locationProvider", function($routeProvider,$locationProvider) {
     $routeProvider
         .when("/", {
@@ -25,6 +25,9 @@ var app = angular.module("app",["ngRoute","ngResource"])
 
 app.factory("Appointment", ["$resource", function($resource) {
 	   return $resource("/appointment", null,{
+			"addAppointment": {method: "POST"},
+			"deleteSingle": {method: "PUT"},
+			"deleteAll": {method: "DELETE"}
 	   });
 	}]);
 	
@@ -45,10 +48,50 @@ app.factory("Account", ["$resource", function($resource) {
 
 app.controller("AppointmentController",["$scope","$window", "Appointment", function ($scope,$window,Appointment){
 	
+	$scope.birthDate = '2013-07-23';
+        $scope.dateOptions = {
+            minDate: 0,
+            maxDate: "+12M"
+        };
+	
 	Appointment.get(function(items){
 		$scope.username = items.username[0] + " " + items.username[1];
 		$scope.apps = items.appointments
 	})
+	
+	$scope.addApp = function(){
+		Appointment.addAppointment({date: $scope.ngModel, venue: $scope.venue, description: $scope.description},function(items){
+			if(!items.success)	alert("Adding of item failed");
+		})
+		
+		Appointment.get(function(items){
+			$scope.username = items.username[0] + " " + items.username[1];
+			$scope.apps = items.appointments
+		})
+		
+		$scope.ngModel = "";
+		$scope.venue = "";
+		$scope.description = "";
+	}
+	
+	$scope.deleteApp = function(app,date,venue,description){
+		Appointment.deleteSingle({},{edit: "deleteOne",date: date, venue: venue, description: description},function(items){
+			if(items.success) 
+			  $scope.apps.splice($scope.apps.indexOf(app), 1);
+			else 
+			  alert("Error in deleting");
+		})
+	};
+	
+	$scope.deleteAll = function(){
+		Appointment.deleteAll({},function(items){
+			if(items.success) $scope.apps = [];
+		})
+	}
+	
+	$scope.editDemo = function(){
+		alert("opa");
+	}
 }])
 
 app.controller("AccountController",["$scope","$window", "Account", function ($scope,$window,Account){
@@ -65,6 +108,7 @@ app.controller("AccountController",["$scope","$window", "Account", function ($sc
 }])
 
 app.controller("DataController",["$scope","$window", "$location", "Data", function ($scope,$window,$location,Data){
+	$scope.isCollapsed1 = $scope.isCollapsed2 = $scope.isCollapsed3 = $scope.isCollapsed4 = true;
 	id = $location.$$path.slice(1,8);
 	Data.get({id:id},function(items){
 		$scope.id = id;
@@ -75,26 +119,132 @@ app.controller("DataController",["$scope","$window", "$location", "Data", functi
 		$scope.courses4 = items.year4;
 		$scope.username = items.username[0] + " " + items.username[1];
 	})
-	$scope.year1 = $scope.year2  = $scope.year3  = $scope.year4 = true;
-	$scope.toggle1 = function() {
-            $scope.year1 = $scope.year1 === false ? true: false;
-        };
-	$scope.toggle2 = function() {
-            $scope.year2 = $scope.year2 === false ? true: false;
-        };
-	$scope.toggle3 = function() {
-            $scope.year3 = $scope.year3 === false ? true: false;
-        };
-	$scope.toggle4 = function() {
-            $scope.year4 = $scope.year4 === false ? true: false;
-        };
-	
 }])
 app.controller("MainController",["$scope","$window","Students", function ($scope,$window,Students) {
-	
-// todos get request loading all user specific data
 	Students.get(function(items){
 		$scope.students = items.students;
 		$scope.username = items.username[0] + " " + items.username[1];
 	})
 }])
+
+var datepicker = angular.module("app1",["app","ui.date"])
+datepicker.directive("customDatepicker",function($compile){
+    return {
+        replace:true,
+        templateUrl:"datepicker.html",
+        scope: {
+            ngModel: "=",
+            dateOptions: "="
+        },
+        link: function($scope, $element, $attrs, $controller){
+            var $button = $element.find("button");
+            var $input = $element.find("input");
+            $button.on("click",function(){
+                if($input.is(":focus")){
+                    $input.trigger("blur");
+                } else {
+                    $input.trigger("focus");
+                }
+            });
+        }    
+    };
+})
+	
+angular.module("ui.date", [])
+
+.constant("uiDateConfig", {})
+
+.directive("uiDate", ["uiDateConfig", "$timeout", function (uiDateConfig, $timeout) {
+	var options;
+    options = {};
+    angular.extend(options, uiDateConfig);
+    return {
+		require:"?ngModel",
+		link:function (scope, element, attrs, controller) {
+		var getOptions = function () {
+			return angular.extend({}, uiDateConfig, scope.$eval(attrs.uiDate));
+		};
+		var initDateWidget = function () {
+			var showing = false;
+			var opts = getOptions();
+		if (controller) {
+			var _onSelect = opts.onSelect || angular.noop;
+			opts.onSelect = function (value, picker) {
+				scope.$apply(function() {
+				showing = true;
+				controller.$setViewValue(element.datepicker("getDate"));
+				_onSelect(value, picker);
+				element.blur();
+				});
+			};
+			opts.beforeShow = function() {
+				showing = true;
+			};
+			opts.onClose = function(value, picker) {
+				showing = false;
+			};
+			element.on("blur", function() {
+				if ( !showing ) {
+					scope.$apply(function() {
+					element.datepicker("setDate", element.datepicker("getDate"));
+					controller.$setViewValue(element.datepicker("getDate"));
+					});
+				}
+			});
+			controller.$render = function () {
+				var date = controller.$viewValue;
+				if ( angular.isDefined(date) && date !== null && !angular.isDate(date) ) {
+				throw new Error("ng-Model must be a Date now ' + typeof date + ' - use ui-date-format to convert it from a string");
+				}
+				element.datepicker("setDate", date);
+			};
+		}
+        element.datepicker("destroy");
+        element.datepicker(opts);
+        if ( controller ) {
+			controller.$render();
+        }
+      };
+		scope.$watch(getOptions, initDateWidget, true);
+    }
+  };
+}
+])
+
+.constant("uiDateFormatConfig", "")
+.directive("uiDateFormat", ["uiDateFormatConfig", function(uiDateFormatConfig) {
+	var directive = {
+		require:"ngModel",
+		link: function(scope, element, attrs, modelCtrl) {
+		var dateFormat = attrs.uiDateFormat || uiDateFormatConfig;
+		if ( dateFormat ) {
+			modelCtrl.$formatters.push(function(value) {
+			if (angular.isString(value) ) {
+				return jQuery.datepicker.parseDate(dateFormat, value);
+			}
+			return null;
+        });
+        modelCtrl.$parsers.push(function(value){
+			if (value) {
+				return jQuery.datepicker.formatDate(dateFormat, value);
+			}
+			return null;
+        });
+		} else {
+        modelCtrl.$formatters.push(function(value) {
+			if (angular.isString(value) ) {
+				return new Date(value);
+			}
+			return null;
+        });
+        modelCtrl.$parsers.push(function(value){
+			if (value) {
+				return value.toISOString();
+			}
+			return null;
+        });
+      }
+    }
+  };
+	return directive;
+}]);

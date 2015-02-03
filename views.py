@@ -19,13 +19,37 @@ class Appointment(flask.views.MethodView):
 		c = conn.cursor()
 		c.execute("SELECT title,first_name FROM user WHERE email = ?", (userEmail,))
 		username = c.fetchone()
-		c.execute("SELECT date,venue,description FROM appointment WHERE email = ? ORDER BY date ASC", (userEmail,))
+		c.execute("SELECT date, venue, description FROM appointment WHERE email = ? ORDER BY strftime('%s', date)", (userEmail,))
 		apps = [dict(date=str(row[0]), venue=str(row[1]), description=str(row[2])) for row in c.fetchall()]
 		return jsonify({
             "success": True,
             "username": username,
             "appointments": [{ "date": item["date"], "venue": item["venue"], "description": item["description"] } for item in apps]
         })
+		
+    def post(self):
+		conn = sqlite3.connect("Project.sqlite")
+		c = conn.cursor()
+		args = json.loads(request.data)
+		c.execute("INSERT INTO appointment(email,date,venue,description) VALUES(?,?,?,?)", (userEmail, args["date"], args["venue"], args["description"]))
+		conn.commit()
+		return jsonify({ "success": True })
+		
+    def put(self):
+		conn = sqlite3.connect("Project.sqlite")
+		c = conn.cursor()
+		args = json.loads(request.data)
+		if args["edit"] == "deleteOne":
+			c.execute("DELETE FROM appointment WHERE email = ? AND date = ? AND venue = ? AND description = ?",(userEmail,args["date"],args["venue"],args["description"]))
+		conn.commit()
+		return jsonify({ "success": True })
+	
+    def delete(self):
+		conn = sqlite3.connect("Project.sqlite")
+		c = conn.cursor()
+		c.execute("DELETE FROM appointment WHERE email = ? ", (userEmail,))
+		conn.commit()
+		return jsonify({ "success": True })
 		
 class Students(flask.views.MethodView):
 
