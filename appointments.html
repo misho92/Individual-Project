@@ -20,7 +20,7 @@
 				<input class="span2" type="text" ui-date-format="yy-mm-dd" ng-model="ngModel" ui-date="dateOptions" placeholder="Pick your date"/>
 				<input class="span2" required type="text" ng-model="venue" size="50" placeholder="Enter a venue">
 				<input class="span4" required type="text" ng-model="description" size="200" placeholder="Enter a description"/>
-				<input type="image" ng-click="addApp()" src="/static/plus.png" width="25" height="25" title="Add an appointment"/>
+				<input type="image" ng-click="addApp()" src="/static/plus.jpeg" width="25" height="25" title="Add an appointment"/>
 				<hr/>
 				<table align="center">
 					<thead>
@@ -35,8 +35,8 @@
 							<td><input class="span2" type="text" ng-model="app.date" size="10" readonly></td>
 							<td><input class="span2" type="text" ng-model="app.venue" size="10" readonly></td>
 							<td><input class="span4" type="text" ng-model="app.description" size="100" readonly></td>
-							<td><input type="image" ng-click="deleteApp(app,app.date,app.venue,app.description)" src="/static/minus.png" width="25" height="25" title="Delete me"/></td>
-							<td><input type="image" ng-click="editApp = true" src="/static/pen.png" width="25" height="25" title="Edit me"/></td>
+							<td><input type="image" ng-click="deleteApp(app,app.date,app.venue,app.description)" src="/static/minus.jpg" width="25" height="25" title="Delete me"/></td>
+							<td><input type="image" class="icon-pencil" ng-click="editApp = true" src="/static/pencil.png" width="225" height="225" title="Edit me"/></td>
 							<td><div ng-show="editApp" class="popup">
 								<input class="span2" type="text" ui-date-format="yy-mm-dd" ng-model="editNgModel" ui-date="dateOptions" placeholder="Pick your date"/>
 								<input class="span2" required type="text" ng-model="editVenue" size="50" placeholder="Enter a venue">
@@ -47,7 +47,7 @@
 					</tbody>
 				</table>
 				<h3 ng-if="apps.length==0" align="center"> You don't have any appointments! </h3>
-				<td><input ng-if="apps.length!=0" type="image" ng-click="deleteAll()" src="/static/bin.jpeg" width="25" height="25" title="Delete ALL"/></td>
+				<td><input ng-if="apps.length!=0" type="image" ng-click="deleteAll()" src="/static/bin.png" width="25" height="25" title="Delete ALL"/></td>
 			</form>      
 	    </div>
 	</body>

@@ -25,7 +25,7 @@
 				</thead>
 				<tbody>
 					<tr class="border_bottom" ng-repeat="student in students">
-						<td><a ng-href="../{{student.id}}">{{student.id}}</a></td>
+						<td><a ng-click="go(student.id)" ng-href="../{{student.id}}">{{student.id}}</a></td>
 						<td><a ng-href="../{{student.id}}">{{student.name}}</a></td>
 						<td><a ng-href="../{{student.id}}">{{student.degree}}</a></td>
 					</tr>

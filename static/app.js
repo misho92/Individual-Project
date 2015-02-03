@@ -54,6 +54,10 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", funct
 		else $window.location.href = "/";  
 	};
 	
+	$scope.signout = function(){
+		$window.location.href = "/signout";  
+	};
+	
 	$scope.birthDate = '2013-07-23';
         $scope.dateOptions = {
             minDate: 0,
@@ -108,6 +112,10 @@ app.controller("AccountController",["$scope","$window", "Account", function ($sc
 		else $window.location.href = "/";  
 	};
 	
+	$scope.signout = function(){
+		$window.location.href = "/signout";  
+	};
+	
 	Account.get(function(items){
 		$scope.username = items.username[0] + " " + items.username[1];
 		$scope.title = items.user[0];
@@ -127,6 +135,10 @@ app.controller("DataController",["$scope","$window", "$location", "Data", functi
 		else $window.location.href = "/";  
 	};
 	
+	$scope.signout = function(){
+		$window.location.href = "/signout";  
+	};
+	
 	$scope.isCollapsed1 = $scope.isCollapsed2 = $scope.isCollapsed3 = $scope.isCollapsed4 = true;
 	id = $location.$$path.slice(1,8);
 	Data.get({id:id},function(items){
@@ -144,7 +156,12 @@ app.controller("MainController",["$scope","$window","Students", function ($scope
 	$scope.go = function(param){
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
-		else $window.location.href = "/";  
+		else if (param === "home" ) $window.location.href = "/";
+		else $window.location.href = "/" + param;
+	};
+	
+	$scope.signout = function(){
+		$window.location.href = "/signout";  
 	};
 	
 	$scope.header = {name: "header.html", url: "header.html"};
