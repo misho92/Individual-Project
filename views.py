@@ -41,6 +41,10 @@ class Appointment(flask.views.MethodView):
 		args = json.loads(request.data)
 		if args["edit"] == "deleteOne":
 			c.execute("DELETE FROM appointment WHERE email = ? AND date = ? AND venue = ? AND description = ?",(userEmail,args["date"],args["venue"],args["description"]))
+		else:
+			c.execute("UPDATE appointment SET venue = ? WHERE venue = ? AND description = ? AND date = ? AND email = ? ", (args["venue"],args["oldVenue"],args["oldDescription"],args["oldDate"],userEmail))
+			c.execute("UPDATE appointment SET description = ? WHERE venue = ? AND description = ? AND date = ? AND email = ? ", (args["description"],args["venue"],args["oldDescription"],args["oldDate"],userEmail))
+			c.execute("UPDATE appointment SET date = ? WHERE venue = ? AND description = ? AND date = ? AND email = ? ", (args["date"],args["venue"],args["description"],args["oldDate"],userEmail))
 		conn.commit()
 		return jsonify({ "success": True })
 	

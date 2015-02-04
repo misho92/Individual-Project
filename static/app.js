@@ -27,6 +27,7 @@ app.factory("Appointment", ["$resource", function($resource) {
 	   return $resource("/appointment", null,{
 			"addAppointment": {method: "POST"},
 			"deleteSingle": {method: "PUT"},
+			"edit": {method: "PUT"},
 			"deleteAll": {method: "DELETE"}
 	   });
 	}]);
@@ -45,8 +46,47 @@ app.factory("Account", ["$resource", function($resource) {
 	   return $resource("/account", null,{
 	   });
 	}]);
+	
+app.controller("ModalControlller", ["$scope", "$modalInstance" ,"$window", function ($scope, $modalInstance, array,$window) {
 
-app.controller("AppointmentController",["$scope","$window", "Appointment", function ($scope,$window,Appointment){
+  $scope.save = function () {
+    array = {app: array.size, venue: $scope.modalVenue,description: $scope.modalDescription, date:$scope.modalngModel}
+    $modalInstance.close(array);
+    
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}]);
+
+app.controller("AppointmentController",["$scope","$window", "Appointment", "$modal", "$log", function ($scope,$window,Appointment,$modal, $log){
+
+	$scope.open = function (size) {
+    var modal = $modal.open({
+      templateUrl: "modal",
+      controller: "ModalControlller",
+      size: size,
+      resolve: {
+        array: function () {
+          array = {app: size, venue: $scope.modalVenue,description: $scope.modalDescription,date:$scope.modalngModel}
+          return array;
+		}
+      }
+    });
+    modal.result.then(function (array) {
+	  Appointment.edit({},{edit: "one",oldDate: size.date, oldVenue: size.venue,oldDescription: size.description,venue: array.venue, description: array.description,date: array.date},function(items){
+		if(items.success){
+		} else {
+			alert("Editting of todo failed");
+		}
+	})
+	  Appointment.get(function(items){
+		$scope.username = items.username[0] + " " + items.username[1];
+		$scope.apps = items.appointments
+	})
+    });
+  };
 
 	$scope.go = function(param){
 		if(param === "app") $window.location.href = "/appointments";
