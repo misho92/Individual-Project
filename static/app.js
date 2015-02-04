@@ -50,6 +50,9 @@ app.factory("Account", ["$resource", function($resource) {
 	
 app.controller("ModalControlller", ["$scope", "$modalInstance" ,"$window", function ($scope, $modalInstance, array,$window) {
 
+	$scope.modalVenue = array.array.app.venue;
+	$scope.modalDescription = array.array.app.description;
+	$scope.modalngModel = array.array.app.date
   $scope.save = function () {
 	if(!$scope.modalngModel) alert("Please insert date");
 	else{
