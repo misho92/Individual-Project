@@ -19,19 +19,19 @@ class Appointment(flask.views.MethodView):
 		c = conn.cursor()
 		c.execute("SELECT title,first_name FROM user WHERE email = ?", (userEmail,))
 		username = c.fetchone()
-		c.execute("SELECT date, venue, description FROM appointment WHERE email = ? ORDER BY strftime('%s', date)", (userEmail,))
-		apps = [dict(date=str(row[0]), venue=str(row[1]), description=str(row[2])) for row in c.fetchall()]
+		c.execute("SELECT date, venue, description, status FROM appointment WHERE email = ? ORDER BY strftime('%s', date)", (userEmail,))
+		apps = [dict(date=str(row[0]), venue=str(row[1]), description=str(row[2]), status=str(row[3])) for row in c.fetchall()]
 		return jsonify({
             "success": True,
             "username": username,
-            "appointments": [{ "date": item["date"], "venue": item["venue"], "description": item["description"] } for item in apps]
+            "appointments": [{ "date": item["date"], "venue": item["venue"], "description": item["description"], "status": item["status"] } for item in apps]
         })
 		
     def post(self):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
 		args = json.loads(request.data)
-		c.execute("INSERT INTO appointment(email,date,venue,description) VALUES(?,?,?,?)", (userEmail, args["date"], args["venue"], args["description"]))
+		c.execute("INSERT INTO appointment(email,date,venue,description,status) VALUES(?,?,?,?,?)", (userEmail, args["date"], args["venue"], args["description"], args["status"]))
 		conn.commit()
 		return jsonify({ "success": True })
 		
@@ -40,11 +40,13 @@ class Appointment(flask.views.MethodView):
 		c = conn.cursor()
 		args = json.loads(request.data)
 		if args["edit"] == "deleteOne":
-			c.execute("DELETE FROM appointment WHERE email = ? AND date = ? AND venue = ? AND description = ?",(userEmail,args["date"],args["venue"],args["description"]))
+			c.execute("DELETE FROM appointment WHERE email = ? AND date = ? AND venue = ? AND description = ? AND status = ?",(userEmail,args["date"],args["venue"],args["description"],args["status"]))
+		elif args["edit"] == "confirm":
+			c.execute("UPDATE appointment SET status = ? WHERE venue = ? AND description = ? AND date = ? AND email = ? ", ("confirmed",args["venue"],args["description"],args["date"],userEmail))
 		else:
-			c.execute("UPDATE appointment SET venue = ? WHERE venue = ? AND description = ? AND date = ? AND email = ? ", (args["venue"],args["oldVenue"],args["oldDescription"],args["oldDate"],userEmail))
-			c.execute("UPDATE appointment SET description = ? WHERE venue = ? AND description = ? AND date = ? AND email = ? ", (args["description"],args["venue"],args["oldDescription"],args["oldDate"],userEmail))
-			c.execute("UPDATE appointment SET date = ? WHERE venue = ? AND description = ? AND date = ? AND email = ? ", (args["date"],args["venue"],args["description"],args["oldDate"],userEmail))
+			c.execute("UPDATE appointment SET venue = ? WHERE venue = ? AND description = ? AND date = ? AND status = ? AND email = ? ", (args["venue"],args["oldVenue"],args["oldDescription"],args["oldDate"],args["status"],userEmail))
+			c.execute("UPDATE appointment SET description = ? WHERE venue = ? AND description = ? AND date = ? AND status = ? AND email = ? ", (args["description"],args["venue"],args["oldDescription"],args["oldDate"],args["status"],userEmail))
+			c.execute("UPDATE appointment SET date = ? WHERE venue = ? AND description = ? AND date = ? AND status = ? AND email = ? ", (args["date"],args["venue"],args["description"],args["oldDate"],args["status"],userEmail))
 		conn.commit()
 		return jsonify({ "success": True })
 	

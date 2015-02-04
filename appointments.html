@@ -4,7 +4,6 @@
 		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.14/angular.min.js"></script>
 		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
-		<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
 		<script type="text/javascript" src="/static/app.js"></script>
 		<link href="/static/styles.css" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.14/angular-route.min.js"></script>
@@ -27,14 +26,29 @@
 						<p><input class="span4" required type="text" ng-model="modalDescription" size="200" placeholder="Enter a description"/></p>
 					</div>
 					<div class="modal-footer">
-						<button class="btn btn-primary" ng-click="save()"><i class="glyphicon glyphicon-floppy-disk"></i> Save</button>
-						<button class="btn btn-danger" ng-click="cancel()"><i class="glyphicon glyphicon-remove"></i> Cancel</button>
+						<button class="btn btn-primary" ng-click="save()"><i class="icon-ok icon-white"></i> Save</button>
+						<button class="btn btn-danger" ng-click="cancel()"><i class="icon-remove icon-white"></i> Cancel</button>
+					</div>
+				</script>
+				<script type="text/ng-template" id="confirm">
+					<div class="modal-header">
+						<h3 class="modal-title">Delete all Appointments</h3>
+					</div>
+					<div class="modal-body">
+						<h4 align="center"> Are you sure you want to delete ALL appointments </h4>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-default" ng-click="cancel()"><i class="icon-remove icon-black"></i> No</button>
+						<button class="btn btn-primary" ng-click="save()"><i class="icon-ok icon-white"></i> Yes</button>
 					</div>
 				</script>
 				<h1 align="center"> My Appointments </h1>
 				<input class="span2" type="text" ui-date-format="yy-mm-dd" ng-model="ngModel" ui-date="dateOptions" placeholder="Pick your date"/>
 				<input class="span2" required type="text" ng-model="venue" size="50" placeholder="Enter a venue">
 				<input class="span4" required type="text" ng-model="description" size="200" placeholder="Enter a description"/>
+				<select class="span2" required ng-model="status" ng-change="Status(status)" ng-options="status for status in statuses">
+			        <option class="" value=""></option>
+			    </select>
 				<input type="image" ng-click="addApp()" src="/static/plus.jpeg" width="35" height="35" title="Add an appointment"/>
 				<hr/>
 				<table align="center">
@@ -42,7 +56,9 @@
 						<tr>
 							<th ng-if="apps.length!=0">Date</th> 
 							<th ng-if="apps.length!=0">Venue</th> 
-							<th ng-if="apps.length!=0">Description</th>   
+							<th ng-if="apps.length!=0">Description</th>
+							<th ng-if="apps.length!=0">Status</th>
+							
 					</tr>
 					</thead>
 					<tbody>
@@ -50,13 +66,16 @@
 							<td><input class="span2" type="text" ng-model="app.date" size="10" readonly></td>
 							<td><input class="span2" type="text" ng-model="app.venue" size="10" readonly></td>
 							<td><input class="span4" type="text" ng-model="app.description" size="100" readonly></td>
-							<td><input type="image" ng-click="deleteApp(app,app.date,app.venue,app.description)" src="/static/minus.jpg" width="25" height="25" title="Delete me"/></td>
+							<td ng-if="app.status == 'pending'"><i class="icon-question-sign" title="Pending"></i></td>
+							<td ng-if="app.status == 'confirmed'"><i class="icon-ok" title="Confirmed"></i></td>
+							<td><input type="image" ng-click="deleteApp(app,app.date,app.venue,app.description,app.status)" src="/static/minus.jpg" width="25" height="25" title="Delete me"/></td>
 							<td><input type="image" ng-click="open(app)" src="/static/pencil.png" width="25" height="25" title="Edit me"/></td>
+							<td ng-if="app.status == 'pending'"><input type="image" ng-click="confirmAppointment(app.date,app.venue,app.description)" src="/static/check.png" width="45" height="45" title="Confirm me"/></td>
 						</tr>
 					</tbody>
 				</table>
 				<h3 ng-if="apps.length==0" align="center"> You don't have any appointments! </h3>
-				<td><input ng-if="apps.length!=0" type="image" ng-click="deleteAll()" src="/static/bin.png" width="25" height="25" title="Delete ALL"/></td>
+				<td><input ng-if="apps.length!=0" type="image" ng-click="confirm()" src="/static/bin.png" width="25" height="25" title="Delete ALL"/></td>
 			</form>      
 	    </div>
 	</body>

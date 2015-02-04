@@ -28,6 +28,7 @@ app.factory("Appointment", ["$resource", function($resource) {
 			"addAppointment": {method: "POST"},
 			"deleteSingle": {method: "PUT"},
 			"edit": {method: "PUT"},
+			"confirm": {method: "PUT"},
 			"deleteAll": {method: "DELETE"}
 	   });
 	}]);
@@ -50,17 +51,49 @@ app.factory("Account", ["$resource", function($resource) {
 app.controller("ModalControlller", ["$scope", "$modalInstance" ,"$window", function ($scope, $modalInstance, array,$window) {
 
   $scope.save = function () {
-    array = {app: array.size, venue: $scope.modalVenue,description: $scope.modalDescription, date:$scope.modalngModel}
-    $modalInstance.close(array);
-    
+	if(!$scope.modalngModel) alert("Please insert date");
+	else{
+		array = {app: array.size, venue: $scope.modalVenue,description: $scope.modalDescription, date:$scope.modalngModel}
+		$modalInstance.close(array);
+	}
   };
 
   $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
+    $modalInstance.dismiss("cancel");
   };
 }]);
 
+app.controller("ConfirmModalControlller", ["$scope", "$modalInstance" ,"$window", function ($scope, $modalInstance, array,$window) {
+
+  $scope.save = function () {
+	$modalInstance.close();
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss("cancel");
+  };
+}]);
+
+
 app.controller("AppointmentController",["$scope","$window", "Appointment", "$modal", "$log", function ($scope,$window,Appointment,$modal, $log){
+
+	$scope.confirmAppointment = function(date,venue,description){
+		Appointment.confirm({},{edit: "confirm",date: date, venue: venue, description: description},function(items){
+			if(items.success){
+			} else {
+				alert("Confirming appointment failed");
+			}
+		})
+		  Appointment.get(function(items){
+			$scope.username = items.username[0] + " " + items.username[1];
+			$scope.apps = items.appointments
+		})
+	}
+	$scope.statuses = ["pending","confirmed"];
+	
+	$scope.Status = function(status) {
+    	$scope.status = status;
+    }
 
 	$scope.open = function (size) {
     var modal = $modal.open({
@@ -75,10 +108,10 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
       }
     });
     modal.result.then(function (array) {
-	  Appointment.edit({},{edit: "one",oldDate: size.date, oldVenue: size.venue,oldDescription: size.description,venue: array.venue, description: array.description,date: array.date},function(items){
+	  Appointment.edit({},{edit: "one",oldDate: size.date, oldVenue: size.venue,oldDescription: size.description,venue: array.venue, description: array.description,date: array.date, status: size.status},function(items){
 		if(items.success){
 		} else {
-			alert("Editting of todo failed");
+			alert("Editting of appointment failed");
 		}
 	})
 	  Appointment.get(function(items){
@@ -88,6 +121,19 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
     });
   };
 
+  $scope.confirm = function (size) {
+    var modal = $modal.open({
+      templateUrl: "confirm",
+      controller: "ConfirmModalControlller",
+      size: size,
+    });
+    modal.result.then(function () {
+		Appointment.deleteAll({},function(items){
+			if(items.success) $scope.apps = [];
+		})
+    });
+  };
+  
 	$scope.go = function(param){
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
@@ -98,7 +144,6 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
 		$window.location.href = "/signout";  
 	};
 	
-	$scope.birthDate = '2013-07-23';
         $scope.dateOptions = {
             minDate: 0,
             maxDate: "+12M"
@@ -110,22 +155,28 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
 	})
 	
 	$scope.addApp = function(){
-		Appointment.addAppointment({date: $scope.ngModel, venue: $scope.venue, description: $scope.description},function(items){
-			if(!items.success)	alert("Adding of item failed");
-		})
-		
-		Appointment.get(function(items){
-			$scope.username = items.username[0] + " " + items.username[1];
-			$scope.apps = items.appointments
-		})
-		
-		$scope.ngModel = "";
-		$scope.venue = "";
-		$scope.description = "";
+		if(!$scope.ngModel) {
+			alert("Please insert date"); 
+		}
+		else{
+			Appointment.addAppointment({date: $scope.ngModel, venue: $scope.venue, description: $scope.description, status: $scope.status},function(items){
+				if(!items.success)	alert("Adding of item failed");
+			})
+			
+			Appointment.get(function(items){
+				$scope.username = items.username[0] + " " + items.username[1];
+				$scope.apps = items.appointments
+			})
+			
+			$scope.ngModel = "";
+			$scope.venue = "";
+			$scope.description = "";
+			$scope.status = "";
+		}
 	}
 	
-	$scope.deleteApp = function(app,date,venue,description){
-		Appointment.deleteSingle({},{edit: "deleteOne",date: date, venue: venue, description: description},function(items){
+	$scope.deleteApp = function(app,date,venue,description,status){
+		Appointment.deleteSingle({},{edit: "deleteOne",date: date, venue: venue, description: description,status: status},function(items){
 			if(items.success) 
 			  $scope.apps.splice($scope.apps.indexOf(app), 1);
 			else 
@@ -133,15 +184,6 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
 		})
 	};
 	
-	$scope.deleteAll = function(){
-		Appointment.deleteAll({},function(items){
-			if(items.success) $scope.apps = [];
-		})
-	}
-	
-	$scope.editDemo = function(){
-		alert("opa");
-	}
 }])
 
 app.controller("AccountController",["$scope","$window", "Account", function ($scope,$window,Account){
