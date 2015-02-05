@@ -21,8 +21,8 @@
 						<h3 class="modal-title">Edit appointment</h3>
 					</div>
 					<div class="modal-body">
-						<p><input class="span2" type="text" ui-date-format="yy-mm-dd" ng-model="modalngModel" ui-date="dateOptions" placeholder="Pick your date"/></p>
-						<p><input class="span2" required type="text" ng-model="modalVenue" size="50" placeholder="Enter a venue"></p>
+						<p><i class="icon-calendar"></i><input class="span2" type="text" ui-date-format="yy-mm-dd" ng-model="modalngModel" ui-date="dateOptions" placeholder="Pick your date"/></p>
+						<p><i class="icon-map-marker"></i><input class="span2" required type="text" ng-model="modalVenue" size="50" placeholder="Enter a venue"></p>
 						<p><input class="span4" required type="text" ng-model="modalDescription" size="200" placeholder="Enter a description"/></p>
 					</div>
 					<div class="modal-footer">
@@ -43,6 +43,7 @@
 					</div>
 				</script>
 				<h1 align="center"> My Appointments </h1>
+				<i class="icon-calendar"></i>
 				<input class="span2" type="text" ui-date-format="yy-mm-dd" ng-model="ngModel" ui-date="dateOptions" placeholder="Pick your date"/>
 				<input class="span2" required type="text" ng-model="venue" size="50" placeholder="Enter a venue">
 				<input class="span4" required type="text" ng-model="description" size="200" placeholder="Enter a description"/>
@@ -54,8 +55,8 @@
 				<table align="center">
 					<thead>
 						<tr>
-							<th ng-if="apps.length!=0">Date</th> 
-							<th ng-if="apps.length!=0">Venue</th> 
+							<th ng-if="apps.length!=0"><i class="icon-calendar"></i> Date</th> 
+							<th ng-if="apps.length!=0"><i class="icon-map-marker"></i> Venue</th> 
 							<th ng-if="apps.length!=0">Description</th>
 							<th ng-if="apps.length!=0">Status</th>
 							

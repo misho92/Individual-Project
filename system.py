@@ -5,12 +5,13 @@ from flask import Flask, send_file, make_response,jsonify,request
 from views import Signin, Appointment, Account, Students, Data
 import sqlite3
 from werkzeug.security import check_password_hash
-from flask_httpauth import HTTPBasicAuth
+from flask_httpauth import HTTPBasicAuth,HTTPAuth
 
 # set flask app options
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar("FLASKR_SETTINGS",silent=True)
+
 
 # add url rules with the corresponding view and method
 app.add_url_rule("/signin", view_func=Signin.as_view("Signin"), methods=["POST"])
@@ -47,7 +48,15 @@ def get_password(email):
 
 @auth.error_handler
 def unauthorized():
-    return make_response(jsonify( { "error": "Unauthorized access" } ), 401)
+    return make_response(send_file("errors/401.html"), 401)
+	
+@app.errorhandler(404)
+def not_found(e):
+    return make_response(send_file("errors/404.html"), 404)
+	
+@app.errorhandler(500)
+def internal_server_error(e):
+    return make_response(send_file("errors/500.html"), 500)
 
 @app.route("/appointments")
 @auth.login_required
@@ -61,7 +70,7 @@ def account():
 
 @app.route("/signout")
 def signout():
-    return send_file("signout.html")
+	return send_file("signout.html")
 
 @app.route("/")
 @auth.login_required
