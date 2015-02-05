@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app="app">
+<html ng-app="app1">
 	<head>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.14/angular.min.js"></script>
 		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -13,13 +13,43 @@
 		<div class="row" id="division">
 		    <form ng-controller="AccountController">
 			    <div data-ng-include="'header'"></div>
+				<script type="text/ng-template" id="modal">
+					<div class="modal-header">
+						<h3 class="modal-title">Edit my personal data</h3>
+					</div>
+					<div class="modal-body">
+						<p><label> Title </label></p>
+						<input required class="span3" type="text" ng-model="modalTitle" size="10">
+						<label> First name </label>
+						<input required class="span3" type="text" ng-model="modalFirst_name" size="10">
+						<label> Surname </label>
+						<input required class="span3" type="text" ng-model="modalSurname" size="10">
+						<label> Department </label>
+						<input required class="span3" type="text" ng-model="modalDepartment" size="10">
+						<label> Telephone number </label>
+						<input required class="span3" type="text" ng-model="modalNumber" size="10">
+						<label> Date of birth </label>
+						<p><input required class="span3" type="text" ng-model="modalDoB" placeholder="YYYY-MM-DD" size="10"></p>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-primary" ng-click="save()"><i class="icon-ok icon-white"></i> Save</button>
+						<button class="btn btn-danger" ng-click="cancel()"><i class="icon-remove icon-white"></i> Cancel</button>
+					</div>
+				</script>
 				<h1 align="center"> My Account </h1>
-				<p><input class="span4" type="text" ng-model="title" size="10" readonly></p>
-				<p><input class="span4" type="text" ng-model="first_name" size="10" readonly></p>
-				<p><input class="span4" type="text" ng-model="surname" size="10" readonly></p>
-				<p><input class="span4" type="text" ng-model="department" size="10" readonly></p>
-				<p><input class="span4" type="text" ng-model="number" size="10" readonly></p>
-				<p><input class="span4" type="text" ng-model="DoB" size="10" readonly></p>
+				<p><label> Title </label></p>
+				<input class="span3" type="text" ng-model="title" size="10" readonly>
+				<label> First name </label>
+				<input class="span3" type="text" ng-model="first_name" size="10" readonly>
+				<label> Surname </label>
+				<input class="span3" type="text" ng-model="surname" size="10" readonly>
+				<label> Department </label>
+				<input class="span3" type="text" ng-model="department" size="10" readonly>
+				<label> Telephone number </label>
+				<input class="span3" type="text" ng-model="number" size="10" readonly>
+				<label> Date of birth </label>
+				<input class="span3" type="text" ng-model="DoB" size="10" readonly>
+				<p><input type="image" ng-click="open(title,first_name,surname,department,number,DoB)" src="/static/pencil.png" width="25" height="25" title="Edit my data"/></p>
 		    </form>      
 	    </div>
 	</body>

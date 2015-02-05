@@ -100,6 +100,7 @@ class Data(flask.views.MethodView):
         })
 
 class Account(flask.views.MethodView):
+
 	def get(self):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
@@ -112,6 +113,20 @@ class Account(flask.views.MethodView):
 			"username": username,
 			"user": user
         })
+	def put(self):
+		conn = sqlite3.connect("Project.sqlite")
+		c = conn.cursor()
+		args = json.loads(request.data)
+		if args["edit"] == "edit":
+			print args["DoB"]
+			c.execute("UPDATE user SET title = ? WHERE email = ?", (args["title"],userEmail))
+			c.execute("UPDATE user SET first_name = ? WHERE email = ?", (args["first_name"],userEmail))
+			c.execute("UPDATE user SET surname = ? WHERE email = ?", (args["surname"],userEmail))
+			c.execute("UPDATE user SET department = ? WHERE email = ?", (args["department"],userEmail))
+			c.execute("UPDATE user SET number = ? WHERE email = ?", (args["number"],userEmail))
+			c.execute("UPDATE user SET DoB = ? WHERE email = ?", (args["DoB"],userEmail))
+		conn.commit()
+		return jsonify({ "success": True })
 		
 class Signin(flask.views.MethodView):
     

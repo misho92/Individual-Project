@@ -45,19 +45,37 @@ app.factory("Data", ["$resource", function($resource) {
 	
 app.factory("Account", ["$resource", function($resource) {
 	   return $resource("/account", null,{
+	   "edit": {method: "PUT"}
 	   });
 	}]);
 	
 app.controller("ModalControlller", ["$scope", "$modalInstance" ,"$window", function ($scope, $modalInstance, array,$window) {
-
-	$scope.modalVenue = array.array.app.venue;
-	$scope.modalDescription = array.array.app.description;
-	$scope.modalngModel = array.array.app.date
-  $scope.save = function () {
-	if(!$scope.modalngModel) alert("Please insert date");
+	
+	if(array.array.title){
+		$scope.modalTitle = array.array.title;
+		$scope.modalFirst_name = array.array.first_name;
+		$scope.modalSurname = array.array.surname;
+		$scope.modalDepartment = array.array.department;
+		$scope.modalNumber = array.array.number;
+		$scope.modalDoB = array.array.DoB;
+	}
 	else{
-		array = {app: array.size, venue: $scope.modalVenue,description: $scope.modalDescription, date:$scope.modalngModel}
+		$scope.modalVenue = array.array.app.venue;
+		$scope.modalDescription = array.array.app.description;
+		$scope.modalngModel = array.array.app.date
+	}
+	
+  $scope.save = function () {
+	if(array.array.title){
+		array = {title: $scope.modalTitle, first_name: $scope.modalFirst_name, surname: $scope.modalSurname, department: $scope.modalDepartment, number: $scope.modalNumber, DoB: $scope.modalDoB}
 		$modalInstance.close(array);
+	}
+	else{
+		if(!$scope.modalngModel) alert("Please insert date");
+		else{
+			array = {app: array.size, venue: $scope.modalVenue,description: $scope.modalDescription, date:$scope.modalngModel}
+			$modalInstance.close(array);
+		}
 	}
   };
 
@@ -189,7 +207,38 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
 	
 }])
 
-app.controller("AccountController",["$scope","$window", "Account", function ($scope,$window,Account){
+app.controller("AccountController",["$scope","$window", "Account", "$modal", "$log", function ($scope,$window,Account,$modal,$log){
+
+	$scope.open = function (title, first_name, surname, department, number, DoB) {
+    var modal = $modal.open({
+      templateUrl: "modal",
+      controller: "ModalControlller",
+      size: title,
+      resolve: {
+        array: function () {
+          array = {title: title, first_name: first_name,surname: surname, department: department, number: number, DoB: DoB}
+          return array;
+		}
+      }
+    });
+    modal.result.then(function (array) {
+	  Account.edit({},{edit: "edit", title: array.title, first_name: array.first_name, surname: array.surname, department: array.department, number: array.number, DoB: array.DoB},function(items){
+		if(items.success){
+		} else {
+			alert("Editting of personal data failed");
+		}
+	})
+	  Account.get(function(items){
+		$scope.username = items.username[0] + " " + items.username[1];
+		$scope.title = items.user[0];
+		$scope.first_name = items.user[1];
+		$scope.surname = items.user[2];
+		$scope.department = items.user[3];
+		$scope.number = items.user[4];
+		$scope.DoB = items.user[5];
+	})
+    });
+  };
 	
 	$scope.go = function(param){
 		if(param === "app") $window.location.href = "/appointments";

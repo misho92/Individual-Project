@@ -5,7 +5,7 @@ from flask import Flask, send_file, make_response,jsonify,request
 from views import Signin, Appointment, Account, Students, Data
 import sqlite3
 from werkzeug.security import check_password_hash
-from flask_httpauth import HTTPBasicAuth,HTTPAuth
+from flask_httpauth import HTTPBasicAuth
 
 # set flask app options
 app = Flask(__name__)
@@ -16,7 +16,7 @@ app.config.from_envvar("FLASKR_SETTINGS",silent=True)
 # add url rules with the corresponding view and method
 app.add_url_rule("/signin", view_func=Signin.as_view("Signin"), methods=["POST"])
 app.add_url_rule("/appointment", view_func=Appointment.as_view("Appointment"), methods=["GET","POST","PUT","DELETE"])
-app.add_url_rule("/account", view_func=Account.as_view("Account"), methods=["GET"])
+app.add_url_rule("/account", view_func=Account.as_view("Account"), methods=["GET","PUT"])
 app.add_url_rule("/students", view_func=Students.as_view("Students"), methods=["GET"])
 app.add_url_rule("/<int:id>", view_func=Data.as_view("Data"), methods=["GET"])
 
