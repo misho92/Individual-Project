@@ -138,6 +138,24 @@ class Data(flask.views.MethodView):
 			"totalGPA": totalGPA
         })
 
+    def put(self,id=None):
+		conn = sqlite3.connect("Project.sqlite")
+		c = conn.cursor()
+		args = json.loads(request.data)
+		c.execute("DELETE FROM course WHERE id = ? AND student_id = ? ", (args["course"], id))
+		conn.commit()
+		return jsonify({ "success": True })
+
+    def post(self,id=None):
+		conn = sqlite3.connect("Project.sqlite")
+		c = conn.cursor()
+		args = json.loads(request.data)
+		c.execute("INSERT INTO course(id,student_id,year,grade,credits,department) VALUES (?,?,?,?,?,?)", (args["course"], id, args["year"], args["grade"], args["credits"], args["department"]))
+		conn.commit()
+		return jsonify({ "success": True })
+
+
+
 class Account(flask.views.MethodView):
 
 	def get(self):
@@ -157,7 +175,6 @@ class Account(flask.views.MethodView):
 		c = conn.cursor()
 		args = json.loads(request.data)
 		if args["edit"] == "edit":
-			print args["DoB"]
 			c.execute("UPDATE user SET title = ? WHERE email = ?", (args["title"],userEmail))
 			c.execute("UPDATE user SET first_name = ? WHERE email = ?", (args["first_name"],userEmail))
 			c.execute("UPDATE user SET surname = ? WHERE email = ?", (args["surname"],userEmail))

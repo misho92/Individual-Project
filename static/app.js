@@ -40,6 +40,8 @@ app.factory("Students", ["$resource", function($resource) {
 	
 app.factory("Data", ["$resource", function($resource) {
 	   return $resource("/:id", null,{
+		   "addCourse": {method: "POST"},
+		   "deleteCourse": {method: "PUT"}
 	   });
 	}]);	
 	
@@ -105,10 +107,7 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
 				alert("Confirming appointment failed");
 			}
 		})
-		  Appointment.get(function(items){
-			$scope.username = items.username[0] + " " + items.username[1];
-			$scope.apps = items.appointments
-		})
+		  get();
 	}
 	$scope.statuses = ["pending","confirmed"];
 	
@@ -135,10 +134,7 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
 			alert("Editting of appointment failed");
 		}
 	})
-	  Appointment.get(function(items){
-		$scope.username = items.username[0] + " " + items.username[1];
-		$scope.apps = items.appointments
-	})
+	  get();
     });
   };
 
@@ -170,10 +166,14 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
             maxDate: "+12M"
         };
 	
-	Appointment.get(function(items){
+	function get(){
+		Appointment.get(function(items){
 		$scope.username = items.username[0] + " " + items.username[1];
 		$scope.apps = items.appointments
-	})
+		})
+	}
+	
+	get();
 	
 	$scope.addApp = function(){
 		if(!$scope.ngModel) {
@@ -184,10 +184,7 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
 				if(!items.success)	alert("Adding of item failed");
 			})
 			
-			Appointment.get(function(items){
-				$scope.username = items.username[0] + " " + items.username[1];
-				$scope.apps = items.appointments
-			})
+			get();
 			
 			$scope.ngModel = "";
 			$scope.venue = "";
@@ -228,15 +225,7 @@ app.controller("AccountController",["$scope","$window", "Account", "$modal", "$l
 			alert("Editting of personal data failed");
 		}
 	})
-	  Account.get(function(items){
-		$scope.username = items.username[0] + " " + items.username[1];
-		$scope.title = items.user[0];
-		$scope.first_name = items.user[1];
-		$scope.surname = items.user[2];
-		$scope.department = items.user[3];
-		$scope.number = items.user[4];
-		$scope.DoB = items.user[5];
-	})
+	  get();
     });
   };
 	
@@ -250,18 +239,36 @@ app.controller("AccountController",["$scope","$window", "Account", "$modal", "$l
 		$window.location.href = "/signout";  
 	};
 	
-	Account.get(function(items){
-		$scope.username = items.username[0] + " " + items.username[1];
-		$scope.title = items.user[0];
-		$scope.first_name = items.user[1];
-		$scope.surname = items.user[2];
-		$scope.department = items.user[3];
-		$scope.number = items.user[4];
-		$scope.DoB = items.user[5];
-	})
+	function get(){
+		Account.get(function(items){
+			$scope.username = items.username[0] + " " + items.username[1];
+			$scope.title = items.user[0];
+			$scope.first_name = items.user[1];
+			$scope.surname = items.user[2];
+			$scope.department = items.user[3];
+			$scope.number = items.user[4];
+			$scope.DoB = items.user[5];
+		})
+	}
+	get();
 }])
 
-app.controller("DataController",["$scope","$window", "$location", "Data", function ($scope,$window,$location,Data){
+app.controller("DataController",["$scope","$window", "$location", "Data", "$modal", "$log", function ($scope,$window,$location,Data,$modal,$log){
+	
+	id = $location.$$path.slice(1,8);
+	
+	$scope.deleteRecord = function(course,year){
+		Data.deleteCourse({id:id},{course: course.course},function(items){
+				get();
+			})
+	}
+	
+	$scope.addRecord = function (course,credits,grade,department,year) {
+		Data.addCourse({id:id},{course: course, credits: credits, grade: grade, department: department, year: year},function(items){
+				if(!items.success)	alert("Adding of item failed");
+			})
+		get();
+  };
 
 	$scope.go = function(param){
 		if(param === "app") $window.location.href = "/appointments";
@@ -274,31 +281,33 @@ app.controller("DataController",["$scope","$window", "$location", "Data", functi
 	};
 	
 	$scope.isCollapsed1 = $scope.isCollapsed2 = $scope.isCollapsed3 = $scope.isCollapsed4 = true;
-	id = $location.$$path.slice(1,8);
-	Data.get({id:id},function(items){
-		$scope.id = id;
-		$scope.name = items.name[0] + " " + items.name[1];
-		$scope.courses1 = items.year1;
-		$scope.courses2 = items.year2;
-		$scope.courses3 = items.year3;
-		$scope.courses4 = items.year4;
-		$scope.username = items.username[0] + " " + items.username[1];
-		$scope.taken1 = items.taken1[0];
-		$scope.passed1 = items.passed1[0];
-		$scope.GPA1 = items.GPA1[0];
-		$scope.taken2 = items.taken2[0];
-		$scope.passed2 = items.passed2[0];
-		$scope.GPA2 = items.GPA2[0];
-		$scope.taken3 = items.taken3[0];
-		$scope.passed3 = items.passed3[0];
-		$scope.GPA3 = items.GPA3[0];
-		$scope.taken4 = items.taken4[0];
-		$scope.passed4 = items.passed4[0];
-		$scope.GPA4 = items.GPA4[0];
-		$scope.totalCredits = $scope.taken1 + $scope.taken2 + $scope.taken3 + $scope.taken4;
-		$scope.totalCreditsPassed = $scope.passed1 + $scope.passed2 + $scope.passed3 + $scope.passed4;
-		$scope.totalGPA = items.totalGPA[0];
-	})
+	function get(){
+		Data.get({id:id},function(items){
+			$scope.id = id;
+			$scope.name = items.name[0] + " " + items.name[1];
+			$scope.courses1 = items.year1;
+			$scope.courses2 = items.year2;
+			$scope.courses3 = items.year3;
+			$scope.courses4 = items.year4;
+			$scope.username = items.username[0] + " " + items.username[1];
+			$scope.taken1 = items.taken1[0];
+			$scope.passed1 = items.passed1[0];
+			if(items.GPA1[0] != null) $scope.GPA1 = items.GPA1[0].toPrecision(3);
+			$scope.taken2 = items.taken2[0];
+			$scope.passed2 = items.passed2[0];
+			if(items.GPA2[0] != null) $scope.GPA2 = items.GPA2[0].toPrecision(3);
+			$scope.taken3 = items.taken3[0];
+			$scope.passed3 = items.passed3[0];
+			if(items.GPA3[0] != null) $scope.GPA3 = items.GPA3[0].toPrecision(3);
+			$scope.taken4 = items.taken4[0];
+			$scope.passed4 = items.passed4[0];
+			if(items.GPA4[0] != null) $scope.GPA4 = items.GPA4[0].toPrecision(3);
+			$scope.totalCredits = $scope.taken1 + $scope.taken2 + $scope.taken3 + $scope.taken4;
+			$scope.totalCreditsPassed = $scope.passed1 + $scope.passed2 + $scope.passed3 + $scope.passed4;
+			$scope.totalGPA = items.totalGPA[0].toPrecision(3);
+		})
+	}
+	get();
 }])
 app.controller("MainController",["$scope","$window","Students", function ($scope,$window,Students) {
 

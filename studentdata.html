@@ -20,7 +20,15 @@
 				<p ng-if="courses1.length!=0"> Credits passed: <strong> {{totalCreditsPassed}} </strong></p>
 				<p ng-if="courses1.length!=0"> GPA: <strong> {{totalGPA}} </strong></p>
 				<hr/>
-				<button class="btn btn-default" ng-click="isCollapsed1 = !isCollapsed1">Year 1</button>
+				<p><input required class="span3" type="text" ng-model="course" size="10" placeholder="Enter course">
+				   <input required class="span2" type="text" ng-model="credits" size="10" placeholder="Enter credits">
+				   <input required class="span2" type="text" ng-model="grade" size="10" placeholder="Enter grade">
+				   <input required class="span3" type="text" ng-model="department" size="10" placeholder="Enter department">
+				   <input required class="span2" type="text" ng-model="year" size="10" placeholder="Enter year">
+				   <input type="image" ng-click="addRecord(course,credits,grade,department,year)" src="/static/plus.jpeg" width="30" height="30" title="Add student record"/>
+				<hr/><p>
+				<hr/>
+				<button class="btn btn-default" ng-click="isCollapsed1 = !isCollapsed1; expand()">Year 1</button>
 				<hr>
 				<div align = "center" collapse="isCollapsed1">
 					<div>
@@ -39,6 +47,7 @@
 									<p><td><input ng-if="courses1.length!=0" class="span3" type="text" ng-model="course.credits" size="10" readonly></td></p>
 									<p><td><input ng-if="courses1.length!=0" class="span3" type="text" ng-model="course.grade" size="10" readonly></td></p>
 									<p><td><input ng-if="courses1.length!=0" class="span3" type="text" ng-model="course.department" size="10" readonly></td></p>
+									<p><td><input type="image" ng-click="deleteRecord(course)" src="/static/minus.jpg" width="25" height="25" title="Delete me"/></td></p>
 								</tr>
 							</tbody>
 						</table>
@@ -48,7 +57,6 @@
 						<img ng-if="courses1.length!=0 && passed1 < 120" src="/static/x.jpeg" width="17" height="17" title="Not enough credits. A minimum of 120 is required."></i></p>
 						<p ng-if="courses1.length!=0"> Credits passed: <strong> {{passed1}}  </strong></p>
 						<p ng-if="courses1.length!=0"> Average GPA: <strong> {{GPA1}} </strong></p>
-						<input type="image" ng-click="addRecord('1')" src="/static/plus.jpeg" width="30" height="30" title="Add student record"/>
 					</div> 
 				</div>
 				<hr/>
@@ -71,6 +79,7 @@
 									<p><td><input ng-if="courses2.length!=0" class="span3" type="text" ng-model="course.credits" size="10" readonly></td></p>
 									<p><td><input ng-if="courses2.length!=0" class="span3" type="text" ng-model="course.grade" size="10" readonly></td></p>
 									<p><td><input ng-if="courses2.length!=0" class="span3" type="text" ng-model="course.department" size="10" readonly></td></p>
+									<p><td><input type="image" ng-click="deleteRecord(course)" src="/static/minus.jpg" width="25" height="25" title="Delete me"/></td></p>
 								</tr>
 							</tbody>
 						</table>
@@ -80,7 +89,6 @@
 						<img ng-if="courses2.length!=0 && passed2 < 120" src="/static/x.jpeg" width="17" height="17" title="Not enough credits. A minimum of 120 is required."></i></p>
 						<p ng-if="courses2.length!=0"> Credits passed: <strong> {{passed2}}  </strong></p>
 						<p ng-if="courses2.length!=0"> Average GPA: <strong> {{GPA2}} </strong></p>
-						<input type="image" ng-click="addRecord('2')" src="/static/plus.jpeg" width="30" height="30" title="Add student record"/>
 					</div> 
 				</div>
 				<hr/>
@@ -88,7 +96,7 @@
 				<hr>
 				<div align = "center" collapse="isCollapsed3">
 					<div>
-								<table>
+						<table>
 							<thead>
 								<tr>
 									<th ng-if="courses3.length!=0" >Course</th> 
@@ -103,6 +111,7 @@
 									<p><td><input ng-if="courses3.length!=0" class="span3" type="text" ng-model="course.credits" size="10" readonly></td></p>
 									<p><td><input ng-if="courses3.length!=0" class="span3" type="text" ng-model="course.grade" size="10" readonly></td></p>
 									<p><td><input ng-if="courses3.length!=0" class="span3" type="text" ng-model="course.department" size="10" readonly></td></p>
+									<p><td><input type="image" ng-click="deleteRecord(course)" src="/static/minus.jpg" width="25" height="25" title="Delete me"/></td></p>
 								</tr>
 							</tbody>
 						</table>
@@ -112,7 +121,6 @@
 						<img ng-if="courses3.length!=0 && passed3 < 120" src="/static/x.jpeg" width="17" height="17" title="Not enough credits. A minimum of 120 is required."></i></p>
 						<p ng-if="courses3.length!=0"> Credits passed: <strong> {{passed3}}  </strong></p>
 						<p ng-if="courses3.length!=0"> Average GPA: <strong> {{GPA3}} </strong></p>
-						<input type="image" ng-click="addRecord('3')" src="/static/plus.jpeg" width="30" height="30" title="Add student record"/>
 					</div>
 				</div>
 				<hr/>
@@ -120,7 +128,7 @@
 				<hr>
 				<div align = "center" collapse="isCollapsed4">
 					<div>
-								<table>
+						<table>
 							<thead>
 								<tr>
 									<th ng-if="courses4.length!=0" >Course</th> 
@@ -135,6 +143,7 @@
 									<p><td><input ng-if="courses4.length!=0" class="span3" type="text" ng-model="course.credits" size="10" readonly></td></p>
 									<p><td><input ng-if="courses4.length!=0" class="span3" type="text" ng-model="course.grade" size="10" readonly></td></p>
 									<p><td><input ng-if="courses4.length!=0" class="span3" type="text" ng-model="course.department" size="10" readonly></td></p>
+									<p><td><input type="image" ng-click="deleteRecord(course)" src="/static/minus.jpg" width="25" height="25" title="Delete me"/></td></p>
 								</tr>
 							</tbody>
 						</table>
@@ -144,7 +153,6 @@
 						<img ng-if="courses4.length!=0 && passed4 < 120" src="/static/x.jpeg" width="17" height="17" title="Not enough credits. A minimum of 120 is required."></i></p>
 						<p ng-if="courses4.length!=0"> Credits passed: <strong> {{passed4}}  </strong></p>
 						<p ng-if="courses4.length!=0"> Average GPA: <strong> {{GPA4}} </strong></p>
-						<input type="image" ng-click="addRecord('4')" src="/static/plus.jpeg" width="30" height="30" title="Add student record"/>
 					</div> 
 				</div>
 		    </form>      
