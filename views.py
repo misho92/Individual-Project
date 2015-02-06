@@ -89,6 +89,32 @@ class Data(flask.views.MethodView):
 		year3 = [dict(course=str(row[0]), grade=str(row[1]), credits=str(row[2]), department=str(row[3])) for row in c.fetchall()]
 		c.execute("SELECT id,grade,credits,department FROM course WHERE student_id = ? AND year = 4", (id,))
 		year4 = [dict(course=str(row[0]), grade=str(row[1]), credits=str(row[2]), department=str(row[3])) for row in c.fetchall()]
+		c.execute("SELECT SUM(credits) FROM course WHERE student_id = ? AND year = 1", (id,))
+		taken1 = c.fetchone()
+		c.execute("SELECT SUM(credits) FROM course WHERE student_id = ? AND grade >= 9 AND year = 1", (id,))
+		passed1 = c.fetchone()
+		c.execute("SELECT AVG(grade) FROM course WHERE student_id = ? AND year = 1", (id,))
+		GPA1 = c.fetchone()
+		c.execute("SELECT SUM(credits) FROM course WHERE student_id = ? AND year = 2", (id,))
+		taken2 = c.fetchone()
+		c.execute("SELECT SUM(credits) FROM course WHERE student_id = ? AND grade >= 9 AND year = 2", (id,))
+		passed2 = c.fetchone()
+		c.execute("SELECT AVG(grade) FROM course WHERE student_id = ? AND year = 2", (id,))
+		GPA2 = c.fetchone()
+		c.execute("SELECT SUM(credits) FROM course WHERE student_id = ? AND year = 3", (id,))
+		taken3 = c.fetchone()
+		c.execute("SELECT SUM(credits) FROM course WHERE student_id = ? AND grade >= 9 AND year = 3", (id,))
+		passed3 = c.fetchone()
+		c.execute("SELECT AVG(grade) FROM course WHERE student_id = ? AND year = 3", (id,))
+		GPA3 = c.fetchone()
+		c.execute("SELECT SUM(credits) FROM course WHERE student_id = ? AND year = 4", (id,))
+		taken4 = c.fetchone()
+		c.execute("SELECT SUM(credits) FROM course WHERE student_id = ? AND grade >= 9 AND year = 4", (id,))
+		passed4 = c.fetchone()
+		c.execute("SELECT AVG(grade) FROM course WHERE student_id = ? AND year = 4", (id,))
+		GPA4 = c.fetchone()
+		c.execute("SELECT AVG(grade) FROM course WHERE student_id = ?", (id,))
+		totalGPA = c.fetchone()
 		return jsonify({
             "success": True,
             "username": username,
@@ -96,7 +122,20 @@ class Data(flask.views.MethodView):
 			"year1": [{ "course": item["course"], "grade": item["grade"], "credits": item["credits"], "department": item["department"]} for item in year1],
             "year2": [{ "course": item["course"], "grade": item["grade"], "credits": item["credits"], "department": item["department"]} for item in year2],
 			"year3": [{ "course": item["course"], "grade": item["grade"], "credits": item["credits"], "department": item["department"]} for item in year3],
-			"year4": [{ "course": item["course"], "grade": item["grade"], "credits": item["credits"], "department": item["department"]} for item in year4]
+			"year4": [{ "course": item["course"], "grade": item["grade"], "credits": item["credits"], "department": item["department"]} for item in year4],
+			"taken1": taken1,
+			"passed1": passed1,
+			"GPA1": GPA1,
+			"taken2": taken2,
+			"passed2": passed2,
+			"GPA2": GPA2,
+			"taken3": taken3,
+			"passed3": passed3,
+			"GPA3": GPA3,
+			"taken4": taken4,
+			"passed4": passed4,
+			"GPA4": GPA4,
+			"totalGPA": totalGPA
         })
 
 class Account(flask.views.MethodView):

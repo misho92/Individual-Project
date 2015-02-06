@@ -16,6 +16,9 @@
 			    <div data-ng-include="'header'"></div>
 				<h1 align="center"> Student Specific data</h1>
 				<h3 align="center"> {{id}} {{name}}</h3>
+				<p ng-if="courses1.length!=0"> Total credits: <strong> {{totalCredits}}  </strong></p>
+				<p ng-if="courses1.length!=0"> Credits passed: <strong> {{totalCreditsPassed}} </strong></p>
+				<p ng-if="courses1.length!=0"> GPA: <strong> {{totalGPA}} </strong></p>
 				<hr/>
 				<button class="btn btn-default" ng-click="isCollapsed1 = !isCollapsed1">Year 1</button>
 				<hr>
@@ -40,6 +43,12 @@
 							</tbody>
 						</table>
 						<h3 ng-if="courses1.length==0" type="text">No courses for year 1</h3>
+						<p ng-if="courses1.length!=0"> Credits taken: <strong> {{taken1}} </strong>
+						<img ng-if="courses1.length!=0 && passed1 >= 120" src="/static/tick.png" width="17" height="17" title="Credits passed are over or equal to 120"></i>
+						<img ng-if="courses1.length!=0 && passed1 < 120" src="/static/x.jpeg" width="17" height="17" title="Not enough credits. A minimum of 120 is required."></i></p>
+						<p ng-if="courses1.length!=0"> Credits passed: <strong> {{passed1}}  </strong></p>
+						<p ng-if="courses1.length!=0"> Average GPA: <strong> {{GPA1}} </strong></p>
+						<input type="image" ng-click="addRecord('1')" src="/static/plus.jpeg" width="30" height="30" title="Add student record"/>
 					</div> 
 				</div>
 				<hr/>
@@ -66,6 +75,12 @@
 							</tbody>
 						</table>
 						<h3 ng-if="courses2.length==0" type="text">No courses for year 2</h3>
+						<p ng-if="courses2.length!=0"> Credits taken: <strong> {{taken2}} </strong>
+						<img ng-if="courses2.length!=0 && passed2 >= 120" src="/static/tick.png" width="17" height="17" title="Credits passed are over or equal to 120"></i>
+						<img ng-if="courses2.length!=0 && passed2 < 120" src="/static/x.jpeg" width="17" height="17" title="Not enough credits. A minimum of 120 is required."></i></p>
+						<p ng-if="courses2.length!=0"> Credits passed: <strong> {{passed2}}  </strong></p>
+						<p ng-if="courses2.length!=0"> Average GPA: <strong> {{GPA2}} </strong></p>
+						<input type="image" ng-click="addRecord('2')" src="/static/plus.jpeg" width="30" height="30" title="Add student record"/>
 					</div> 
 				</div>
 				<hr/>
@@ -92,6 +107,12 @@
 							</tbody>
 						</table>
 						<h3 ng-if="courses3.length==0" type="text">No courses for year 3</h3>
+						<p ng-if="courses3.length!=0"> Credits taken: <strong> {{taken3}} </strong>
+						<img ng-if="courses3.length!=0 && passed3 >= 120" src="/static/tick.png" width="17" height="17" title="Credits passed are over or equal to 120"></i>
+						<img ng-if="courses3.length!=0 && passed3 < 120" src="/static/x.jpeg" width="17" height="17" title="Not enough credits. A minimum of 120 is required."></i></p>
+						<p ng-if="courses3.length!=0"> Credits passed: <strong> {{passed3}}  </strong></p>
+						<p ng-if="courses3.length!=0"> Average GPA: <strong> {{GPA3}} </strong></p>
+						<input type="image" ng-click="addRecord('3')" src="/static/plus.jpeg" width="30" height="30" title="Add student record"/>
 					</div>
 				</div>
 				<hr/>
@@ -118,6 +139,12 @@
 							</tbody>
 						</table>
 						<h3 ng-if="courses4.length==0" type="text">No courses for year 4</h3>
+						<p ng-if="courses4.length!=0"> Credits taken: <strong> {{taken4}} </strong>
+						<img ng-if="courses4.length!=0 && passed4 >= 120" src="/static/tick.png" width="17" height="17" title="Credits passed are over or equal to 120"></i>
+						<img ng-if="courses4.length!=0 && passed4 < 120" src="/static/x.jpeg" width="17" height="17" title="Not enough credits. A minimum of 120 is required."></i></p>
+						<p ng-if="courses4.length!=0"> Credits passed: <strong> {{passed4}}  </strong></p>
+						<p ng-if="courses4.length!=0"> Average GPA: <strong> {{GPA4}} </strong></p>
+						<input type="image" ng-click="addRecord('4')" src="/static/plus.jpeg" width="30" height="30" title="Add student record"/>
 					</div> 
 				</div>
 		    </form>      

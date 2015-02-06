@@ -277,12 +277,27 @@ app.controller("DataController",["$scope","$window", "$location", "Data", functi
 	id = $location.$$path.slice(1,8);
 	Data.get({id:id},function(items){
 		$scope.id = id;
-		$scope.name = items.name[0] + items.name[1];
+		$scope.name = items.name[0] + " " + items.name[1];
 		$scope.courses1 = items.year1;
 		$scope.courses2 = items.year2;
 		$scope.courses3 = items.year3;
 		$scope.courses4 = items.year4;
 		$scope.username = items.username[0] + " " + items.username[1];
+		$scope.taken1 = items.taken1[0];
+		$scope.passed1 = items.passed1[0];
+		$scope.GPA1 = items.GPA1[0];
+		$scope.taken2 = items.taken2[0];
+		$scope.passed2 = items.passed2[0];
+		$scope.GPA2 = items.GPA2[0];
+		$scope.taken3 = items.taken3[0];
+		$scope.passed3 = items.passed3[0];
+		$scope.GPA3 = items.GPA3[0];
+		$scope.taken4 = items.taken4[0];
+		$scope.passed4 = items.passed4[0];
+		$scope.GPA4 = items.GPA4[0];
+		$scope.totalCredits = $scope.taken1 + $scope.taken2 + $scope.taken3 + $scope.taken4;
+		$scope.totalCreditsPassed = $scope.passed1 + $scope.passed2 + $scope.passed3 + $scope.passed4;
+		$scope.totalGPA = items.totalGPA[0];
 	})
 }])
 app.controller("MainController",["$scope","$window","Students", function ($scope,$window,Students) {
