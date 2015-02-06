@@ -263,11 +263,38 @@ app.controller("DataController",["$scope","$window", "$location", "Data", "$moda
 			})
 	}
 	
-	$scope.addRecord = function (course,credits,grade,department,year) {
-		Data.addCourse({id:id},{course: course, credits: credits, grade: grade, department: department, year: year},function(items){
+	$scope.colleges = ["College of Arts","College of Medical, Veterinary and Life Sciences","College of Science and Engineering","College of Social Sciences"];
+	
+	$scope.College = function(college) {
+    	$scope.college = college;
+    }
+	
+	$scope.years = ["1","2","3","4"];
+	
+	$scope.Year = function(year) {
+    	$scope.year = year;
+    }
+	
+	$scope.grades = [];
+	
+	for(i = 1; i <= 22; i++){
+		$scope.grades[i] = i;
+	}
+	
+	$scope.Grade = function(grade) {
+    	$scope.grade = grade;
+    }
+	
+	$scope.addRecord = function (course,credits,grade,college,year) {
+		Data.addCourse({id:id},{course: course, credits: credits, grade: grade, department: college, year: year},function(items){
 				if(!items.success)	alert("Adding of item failed");
 			})
 		get();
+		$scope.course = "";
+		$scope.credits = "";
+		$scope.grade = "";
+		$scope.college = "";
+		$scope.year = "";
   };
 
 	$scope.go = function(param){
@@ -280,7 +307,7 @@ app.controller("DataController",["$scope","$window", "$location", "Data", "$moda
 		$window.location.href = "/signout";  
 	};
 	
-	$scope.isCollapsed1 = $scope.isCollapsed2 = $scope.isCollapsed3 = $scope.isCollapsed4 = true;
+	$scope.isCollapsed1 = $scope.isCollapsed2 = $scope.isCollapsed3 = $scope.isCollapsed4 = $scope.courseCollapse = true;
 	function get(){
 		Data.get({id:id},function(items){
 			$scope.id = id;
