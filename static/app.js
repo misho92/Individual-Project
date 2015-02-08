@@ -16,6 +16,11 @@ var app = angular.module("app",["ngRoute","ngResource","ui.bootstrap"])
             controller: "AccountController"
         })
 		
+		.when("/uploads", {
+            templateUrl: "/uploads.html",
+            controller: "UploadController"
+        })
+		
 		.when("/:id", {
             templateUrl: "/studentdata.html",
             controller: "DataController"
@@ -35,6 +40,11 @@ app.factory("Appointment", ["$resource", function($resource) {
 	
 app.factory("Students", ["$resource", function($resource) {
 	   return $resource("/students", null,{
+	   });
+	}]);
+	
+app.factory("Upload", ["$resource", function($resource) {
+	   return $resource("/upload", null,{
 	   });
 	}]);
 	
@@ -154,6 +164,7 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
 	$scope.go = function(param){
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
+		else if(param === "uploads" ) $window.location.href = "/uploads";
 		else $window.location.href = "/";  
 	};
 	
@@ -232,6 +243,7 @@ app.controller("AccountController",["$scope","$window", "Account", "$modal", "$l
 	$scope.go = function(param){
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
+		else if(param === "uploads" ) $window.location.href = "/uploads";
 		else $window.location.href = "/";  
 	};
 	
@@ -300,6 +312,7 @@ app.controller("DataController",["$scope","$window", "$location", "Data", "$moda
 	$scope.go = function(param){
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
+		else if(param === "uploads" ) $window.location.href = "/uploads";
 		else $window.location.href = "/";  
 	};
 	
@@ -342,6 +355,7 @@ app.controller("MainController",["$scope","$window","Students", function ($scope
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
 		else if (param === "home" ) $window.location.href = "/";
+		else if(param === "uploads" ) $window.location.href = "/uploads";
 		else $window.location.href = "/" + param;
 	};
 	
@@ -354,6 +368,36 @@ app.controller("MainController",["$scope","$window","Students", function ($scope
 		$scope.students = items.students;
 		$scope.username = items.username[0] + " " + items.username[1];
 	})
+}])
+
+app.controller("UploadController",["$scope","$window", "$timeout", "Upload", function ($scope,$window,$timeout,Upload) {
+	
+	Upload.get(function(items){
+		$scope.username = items.username[0] + " " + items.username[1];
+		$scope.files = items.files;
+	})
+	
+  /* var percentage = 100;  
+  $scope.max = percentage;
+  $scope.min = 0;
+  
+  $timeout(function(){
+    $scope.progressValue = percentage;
+  }, 200);
+	*/
+	$scope.go = function(param){
+		if(param === "app") $window.location.href = "/appointments";
+		else if(param === "account" ) $window.location.href = "/myaccount";
+		else if(param === "uploads" ) $window.location.href = "/uploads";
+		else $window.location.href = "/";  
+	};
+	
+	$scope.files = ["index.png"];
+	
+	$scope.upload = function(param){
+		$window.location.href = "/uploads/" + param;  
+	};
+	
 }])
 
 var datepicker = angular.module("app1",["app","ui.date"])

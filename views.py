@@ -1,7 +1,8 @@
 # this file consists of several classes. Each of them has a couple of functions which corresponds to the rest calls and execute some database activities
 # based on the rest verb used
 
-from flask import request, jsonify
+from flask import request, jsonify, url_for, redirect
+import os
 import sqlite3
 import flask.views
 import json
@@ -9,6 +10,7 @@ from werkzeug.security import generate_password_hash
 from time import gmtime, strftime
 import datetime
 import time
+from werkzeug import secure_filename
 
 userEmail = ""
 
@@ -21,6 +23,7 @@ class Appointment(flask.views.MethodView):
 		username = c.fetchone()
 		c.execute("SELECT date, venue, description, status FROM appointment WHERE email = ? ORDER BY strftime('%s', date)", (userEmail,))
 		apps = [dict(date=str(row[0]), venue=str(row[1]), description=str(row[2]), status=str(row[3])) for row in c.fetchall()]
+		#os.remove(os.getcwd() + "/uploads/calendar.txt")
 		return jsonify({
             "success": True,
             "username": username,
@@ -189,3 +192,30 @@ class Signin(flask.views.MethodView):
     def post(self,email):
         global userEmail 
         userEmail = email
+
+class Upload(flask.views.MethodView):
+
+	def get(self):
+		conn = sqlite3.connect("Project.sqlite")
+		c = conn.cursor()
+		c.execute("SELECT title,first_name FROM user WHERE email = ?", (userEmail,))
+		username = c.fetchone()
+		files = os.listdir(os.getcwd() + "/uploads/")
+		return jsonify({
+            "success": True,
+			"username": username,
+			"files": files
+        })
+	uploadFolder = "uploads/"
+	extensions = (["txt", "pdf", "png", "jpg", "jpeg", "gif"])
+
+	def allowed_file(self,filename):
+		return "." in filename and filename.rsplit(".", 1)[1] in Upload.extensions
+
+	def post(self):
+		file = request.files["file"]
+		if file and Upload.allowed_file(self,file.filename):
+			filename = secure_filename(file.filename)
+			file.save(os.path.join(Upload.uploadFolder, filename))
+			return redirect(url_for("uploaded_file",
+									filename=filename))

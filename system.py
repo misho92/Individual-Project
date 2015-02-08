@@ -1,10 +1,12 @@
 # this is the engine of the project with its settings and api endpoints
 
 from __future__ import with_statement
-from flask import Flask, send_file, make_response,jsonify,request
-from views import Signin, Appointment, Account, Students, Data
+import os
+from flask import Flask, send_file, make_response, jsonify, request, redirect, url_for, send_from_directory
+from views import Signin, Appointment, Account, Students, Data, Upload
 import sqlite3
 from werkzeug.security import check_password_hash
+from werkzeug import secure_filename
 from flask_httpauth import HTTPBasicAuth
 
 # set flask app options
@@ -19,6 +21,7 @@ app.add_url_rule("/appointment", view_func=Appointment.as_view("Appointment"), m
 app.add_url_rule("/account", view_func=Account.as_view("Account"), methods=["GET","PUT"])
 app.add_url_rule("/students", view_func=Students.as_view("Students"), methods=["GET"])
 app.add_url_rule("/<int:id>", view_func=Data.as_view("Data"), methods=["GET","POST","PUT"])
+app.add_url_rule("/upload", view_func=Upload.as_view("Upload"), methods=["GET","POST"])
 
 # make_response(open("index.html").read()) for no caching
 
@@ -71,6 +74,11 @@ def account():
 @app.route("/signout")
 def signout():
 	return send_file("signout.html")
+	
+@app.route("/uploads")
+@auth.login_required
+def uploads():
+	return send_file("uploads.html")
 
 @app.route("/")
 @auth.login_required
@@ -86,6 +94,15 @@ def header():
 @auth.login_required
 def student(id):
     return send_file("studentdata.html")
+	
+app.config["UPLOAD_FOLDER"] = "uploads/"
+app.config["ALLOWED_EXTENSIONS"] = set(["txt", "pdf", "png", "jpg", "jpeg", "gif"])
+
+@app.route("/uploads/<filename>")
+@auth.login_required
+def uploaded_file(filename):
+    return send_from_directory(app.config["UPLOAD_FOLDER"],
+                               filename)
 
 if __name__ == "__main__":
     app.debug = True

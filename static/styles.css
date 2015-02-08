@@ -65,3 +65,12 @@ h1{
 tr.border_bottom td {
   border-bottom:1pt solid black;
 }
+
+.progress { 
+  height: 3em;
+  i { line-height: 3.5em; }
+}
+
+.progress-bar { 
+  transition: width 1s ease-in-out; 
+}
