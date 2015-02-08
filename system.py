@@ -23,8 +23,6 @@ app.add_url_rule("/students", view_func=Students.as_view("Students"), methods=["
 app.add_url_rule("/<int:id>", view_func=Data.as_view("Data"), methods=["GET","POST","PUT"])
 app.add_url_rule("/upload", view_func=Upload.as_view("Upload"), methods=["GET","POST"])
 
-# make_response(open("index.html").read()) for no caching
-
 auth = HTTPBasicAuth()
 
 @auth.get_password
