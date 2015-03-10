@@ -3,7 +3,7 @@
 from __future__ import with_statement
 import os
 from flask import Flask, send_file, make_response, jsonify, request, redirect, url_for, send_from_directory
-from views import Signin, Appointment, Account, Students, Data, Upload, Admin
+from views import Signin, Appointment, Account, Students, Data, Upload, Advisor, adminStudent
 import sqlite3
 from werkzeug.security import check_password_hash
 from werkzeug import secure_filename
@@ -22,7 +22,8 @@ app.add_url_rule("/account", view_func=Account.as_view("Account"), methods=["GET
 app.add_url_rule("/students", view_func=Students.as_view("Students"), methods=["GET"])
 app.add_url_rule("/<int:id>", view_func=Data.as_view("Data"), methods=["GET","POST","PUT"])
 app.add_url_rule("/upload", view_func=Upload.as_view("Upload"), methods=["GET","POST"])
-app.add_url_rule("/admins", view_func=Admin.as_view("Admin"), methods=["GET","POST","PUT"])
+app.add_url_rule("/advisor", view_func=Advisor.as_view("Advisor"), methods=["GET","POST","PUT"])
+app.add_url_rule("/adminStudent", view_func=adminStudent.as_view("adminStudent"), methods=["GET","POST","PUT"])
 
 auth = HTTPBasicAuth()
 
@@ -88,10 +89,15 @@ def main():
 def header():
     return send_file("header.html")
 	
-@app.route("/admin")
+@app.route("/addadvisor")
 @auth.login_required
-def admin():
-    return send_file("admin.html")
+def addadvisor():
+    return send_file("addadvisor.html")
+	
+@app.route("/addstudent")
+@auth.login_required
+def addstudent():
+    return send_file("addstudent.html")
 	
 @app.route("/<id>")
 @auth.login_required

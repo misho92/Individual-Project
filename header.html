@@ -15,9 +15,10 @@
 					<div class="container-fluid">
 						<p class="navbar-text pull-right">
 							<a ng-click="go('home')" href ="../"><i class="icon-home icon-white"></i>  Home </a>
-							<a ng-click="go('app')" href="../appointments"> My Appointments </a>
+							<a ng-click="go('app')" href="../appointments"><i class="icon-list-alt icon-white"></i> My Appointments </a>
 							<a ng-click="go('uploads')" href="../uploads"><i class="icon-upload icon-white"></i> Uploads </a>
-							<a ng-if="admin" ng-click="go('admin')" href="../admin"><i class="icon-plus icon-white"></i> Add Advisor </a>
+							<a ng-if="admin" ng-click="go('advisor')" href="../addadvisor"><i class="icon-plus icon-white"></i> Add Advisor </a>
+							<a ng-if="admin" ng-click="go('student')" href="../addstudent"><i class="icon-plus-sign icon-white"></i> Add student </a>
 							<a ng-click="go('account')" id="link" href="../myaccount"><i class="icon-user icon-white"></i> Hi, {{username}}</a>
 							<button class="btn-small btn-primary" ng-click="signout()"><i class="icon-off icon-white"></i> Sign out</button>
 						</p>

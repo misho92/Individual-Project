@@ -1,0 +1,52 @@
+<!doctype html>
+<html ng-app="app">
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.14/angular.min.js"></script>
+		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+		<script type="text/javascript" src="/static/app.js"></script>
+		<link href="/static/styles.css" rel="stylesheet">
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.14/angular-route.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.14/angular-resource.min.js"></script>
+		<script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.12.0.js"></script>
+	</head>
+	<body>
+		<div class="row" id="division">
+		    <form ng-controller="AdminStudentController">
+			<div data-ng-include="'header'"></div>
+			<h1 align="center"> This is the admin page</h1>
+			<h3 align="center"> Add student</h3>
+			<input class="span2" required type="text" ng-model="id" size="50" placeholder="Enter student id">
+			<select class="span2" required ng-model="advisor" ng-change="Advisor(advisor)" ng-options="advisor for advisor in advisors">
+			        <option class="" value=""></option>
+			</select>
+			<input class="span2" required type="text" ng-model="first" size="20" placeholder="Enter first name"/>
+			<input class="span2" required type="text" ng-model="surname" size="20" placeholder="Enter surname"/>
+			<input class="span2" required type="text" ng-model="degreeCourse" size="20" placeholder="Enter degree course"/>
+			<input class="span2" required type="text" ng-model="degreeType" size="20" placeholder="Enter degree type"/>
+			<input type="image" ng-click="add(id,first,surname,degreeCourse,degreeType)" src="/static/plus.jpeg" width="30" height="30" title="Add student"/>
+			<hr/>
+			<table ng-show="students.length != 0" align="center">
+				<thead>
+					<tr>
+						<th>Id</th> 
+						<th>Title</th> 
+						<th>Name</th>
+						<th>Degree Course</th>
+						<th>Degree Type</th>
+				   </tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="student in students">
+						<td><input class="span2" type="text" ng-model="student.id" size="10" readonly></td>
+						<td><input class="span2" type="text" ng-model="student.advisor" size="10" readonly></td>
+						<td><input class="span2" type="text" ng-model="student.name" size="10" readonly></td>
+						<td><input class="span2" type="text" ng-model="student.degree_course" size="10" readonly></td>
+						<td><input class="span2" type="text" ng-model="student.degree_type" size="10" readonly></td>
+						<td><input type="image" ng-click="delete(student.id)" src="/static/minus.jpg" width="25" height="25" title="Delete student"/></td>
+					</tr>
+				</tbody>
+			</table>
+		    </form>      
+	    </div>
+	</body>
+</html>

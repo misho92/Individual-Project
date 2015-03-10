@@ -12,9 +12,14 @@ var app = angular.module("app",["ngRoute","ngResource","ui.bootstrap"])
             controller: "AppointmentController"
         })
 		
-		.when("/admin", {
-            templateUrl: "/admin.html",
+		.when("/addadvisor", {
+            templateUrl: "/addadvisor.html",
             controller: "AdminController"
+        })
+		
+		.when("/addstudent", {
+            templateUrl: "/addstudent.html",
+            controller: "AdminStudentController"
         })
 		
 		.when("/myaccount", {
@@ -49,9 +54,16 @@ app.factory("Students", ["$resource", function($resource) {
 	   });
 	}]);
 	
-app.factory("Admin", ["$resource", function($resource) {
-	   return $resource("/admins", null,{
+app.factory("Advisor", ["$resource", function($resource) {
+	   return $resource("/advisor", null,{
 		   "addAdvisor": {method: "POST"},
+		   "deleteOne": {method: "PUT"},
+	   });
+	}]);
+	
+app.factory("AdminStudent", ["$resource", function($resource) {
+	   return $resource("/adminStudent", null,{
+		   "addStudent": {method: "POST"},
 		   "deleteOne": {method: "PUT"},
 	   });
 	}]);
@@ -178,7 +190,8 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
 		else if(param === "uploads" ) $window.location.href = "/uploads";
-		else if(param === "admin" ) $window.location.href = "/admin";
+		else if(param === "advisor" ) $window.location.href = "/addadvisor";
+		else if(param === "student" ) $window.location.href = "/addstudent";
 		else $window.location.href = "/";  
 	};
 	
@@ -230,13 +243,14 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
 	
 }])
 
-app.controller("AdminController",["$scope","$window", "Admin", function ($scope,$window,Admin){
+app.controller("AdminController",["$scope","$window", "Advisor", function ($scope,$window,Advisor){
 	
 	$scope.go = function(param){
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
 		else if(param === "uploads" ) $window.location.href = "/uploads";
-		else if(param === "admin" ) $window.location.href = "/admin";
+		else if(param === "advisor" ) $window.location.href = "/addadvisor";
+		else if(param === "student" ) $window.location.href = "/addstudent";
 		else $window.location.href = "/";  
 	};
 	
@@ -245,14 +259,14 @@ app.controller("AdminController",["$scope","$window", "Admin", function ($scope,
 	};
 	
 	$scope.add = function (email,password,title,first,surname,department) {
-		Admin.addAdvisor({email: email, password: password, title: title, first: first, surname: surname, department: department},function(items){
+		Advisor.addAdvisor({email: email, password: password, title: title, first: first, surname: surname, department: department},function(items){
 				if(!items.success)	alert("Adding of advisor failed");
 			})
 		get();
 	}
 	
 	function get(){
-		Admin.get(function(items){
+		Advisor.get(function(items){
 			if(items.username[1] == "Admin") $scope.admin = true;
 			$scope.username = items.username[0] + " " + items.username[1];
 			$scope.advisors = items.advisors;
@@ -261,8 +275,53 @@ app.controller("AdminController",["$scope","$window", "Admin", function ($scope,
 	get();
 	
 	$scope.delete = function (email) {
-		Admin.deleteOne({email: email},function(items){
-				if(!items.success)	alert("Editing of advisor failed");
+		Advisor.deleteOne({email: email},function(items){
+				if(!items.success)	alert("Deleting of advisor failed");
+			})
+		get();
+	}
+	
+}])
+
+app.controller("AdminStudentController",["$scope","$window", "AdminStudent", function ($scope,$window,AdminStudent){
+	
+	$scope.go = function(param){
+		if(param === "app") $window.location.href = "/appointments";
+		else if(param === "account" ) $window.location.href = "/myaccount";
+		else if(param === "uploads" ) $window.location.href = "/uploads";
+		else if(param === "advisor" ) $window.location.href = "/addadvisor";
+		else if(param === "student" ) $window.location.href = "/addstudent";
+		else $window.location.href = "/";  
+	};
+	
+	$scope.signout = function(){
+		$window.location.href = "/signout";  
+	};
+	
+	$scope.add = function (id,first,surname,degreeCourse,degreeType) {
+		AdminStudent.addStudent({id: id, advisor: $scope.advisor, first: first, surname: surname, degreeCourse: degreeCourse, degreeType: degreeType},function(items){
+				if(!items.success)	alert("Adding of student failed");
+			})
+		get();
+	}
+	
+	function get(){
+		AdminStudent.get(function(items){
+			if(items.username[1] == "Admin") $scope.admin = true;
+			$scope.username = items.username[0] + " " + items.username[1];
+			$scope.students = items.students;
+			$scope.advisors = items.advisors;
+		})
+	}
+	get();
+	
+	$scope.Advisor = function(advisor) {
+    	$scope.advisor = advisor;
+    }
+	
+	$scope.delete = function (id) {
+		AdminStudent.deleteOne({id: id},function(items){
+				if(!items.success)	alert("Deleting of student failed");
 			})
 		get();
 	}
@@ -298,7 +357,8 @@ app.controller("AccountController",["$scope","$window", "Account", "$modal", "$l
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
 		else if(param === "uploads" ) $window.location.href = "/uploads";
-		else if(param === "admin" ) $window.location.href = "/admin";
+		else if(param === "advisor" ) $window.location.href = "/addadvisor";
+		else if(param === "student" ) $window.location.href = "/addstudent";
 		else $window.location.href = "/";  
 	};
 	
@@ -369,7 +429,8 @@ app.controller("DataController",["$scope","$window", "$location", "Data", "$moda
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
 		else if(param === "uploads" ) $window.location.href = "/uploads";
-		else if(param === "admin" ) $window.location.href = "/admin";
+		else if(param === "advisor" ) $window.location.href = "/addadvisor";
+		else if(param === "student" ) $window.location.href = "/addstudent";
 		else $window.location.href = "/";  
 	};
 	
@@ -414,7 +475,8 @@ app.controller("MainController",["$scope","$window","Students", function ($scope
 		else if(param === "account" ) $window.location.href = "/myaccount";
 		else if (param === "home" ) $window.location.href = "/";
 		else if(param === "uploads" ) $window.location.href = "/uploads";
-		else if(param === "admin" ) $window.location.href = "/admin";
+		else if(param === "advisor" ) $window.location.href = "/addadvisor";
+		else if(param === "student" ) $window.location.href = "/addstudent";
 		else $window.location.href = "/" + param;
 	};
 	
@@ -450,7 +512,8 @@ app.controller("UploadController",["$scope","$window", "$timeout", "Upload", fun
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
 		else if(param === "uploads" ) $window.location.href = "/uploads";
-		else if(param === "admin" ) $window.location.href = "/admin";
+		else if(param === "advisor" ) $window.location.href = "/addadvisor";
+		else if(param === "student" ) $window.location.href = "/addstudent";
 		else $window.location.href = "/";  
 	};
 	

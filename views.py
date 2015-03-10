@@ -75,7 +75,7 @@ class Students(flask.views.MethodView):
             "students": [{ "id": item["id"] + item["surname"][:1], "advisor": item["advisor"], "name": item["first_name"] + " " + item["surname"], "degree": item["degree_type"] + " " + item["degree_course"]} for item in students]
         })
 		
-class Admin(flask.views.MethodView):
+class Advisor(flask.views.MethodView):
 
 	def post(self):
 		conn = sqlite3.connect("Project.sqlite")
@@ -104,6 +104,40 @@ class Admin(flask.views.MethodView):
             "success": True,
             "username": username,
             "advisors": [{ "email": item["email"], "title": item["title"], "name": item["first_name"] + " " + item["surname"], "department": item["department"]} for item in advisors]
+        })
+		
+class adminStudent(flask.views.MethodView):
+
+	def post(self):
+		conn = sqlite3.connect("Project.sqlite")
+		c = conn.cursor()
+		args = json.loads(request.data)
+		c.execute("INSERT INTO student(id,advisor,first_name,surname,degree_course,degree_type) VALUES (?,?,?,?,?,?)", (args["id"], args["advisor"][0], args["first"], args["surname"], args["degreeCourse"], args["degreeType"]))
+		conn.commit()
+		return jsonify({ "success": True })
+		
+	def put(self):
+		conn = sqlite3.connect("Project.sqlite")
+		c = conn.cursor()
+		args = json.loads(request.data)
+		c.execute("DELETE FROM student WHERE id = ?", (args["id"],))
+		conn.commit()
+		return jsonify({ "success": True })
+
+	def get(self):
+		conn = sqlite3.connect("Project.sqlite")
+		c = conn.cursor()
+		c.execute("SELECT title,first_name FROM user WHERE email = ?", (userEmail,))
+		username = c.fetchone()
+		c.execute("SELECT * FROM student", ())
+		students = [dict(id=str(row[0]), advisor=str(row[1]), first_name=str(row[2]), surname=str(row[3]), degree_course=str(row[5]), degree_type=str(row[6])) for row in c.fetchall()]
+		c.execute("SELECT email FROM user WHERE email != ?", (userEmail,))
+		advisors = c.fetchall()
+		return jsonify({
+            "success": True,
+            "username": username,
+            "students": [{ "id": item["id"], "advisor": item["advisor"], "name": item["first_name"] + " " + item["surname"], "degree_course": item["degree_course"], "degree_type": item["degree_type"]} for item in students],
+			"advisors": advisors
         })
 		
 class Data(flask.views.MethodView):
