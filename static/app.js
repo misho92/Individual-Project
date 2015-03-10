@@ -464,6 +464,13 @@ app.controller("DataController",["$scope","$window", "$location", "Data", "$moda
 			$scope.totalCredits = $scope.taken1 + $scope.taken2 + $scope.taken3 + $scope.taken4;
 			$scope.totalCreditsPassed = $scope.passed1 + $scope.passed2 + $scope.passed3 + $scope.passed4;
 			$scope.totalGPA = items.totalGPA[0].toPrecision(3);
+			if(items.year2.length == 0 && $scope.totalCredits >= 120) $scope.progress = true;
+			else if(items.year3.length == 0 && $scope.totalCredits >= 240) $scope.progress = true;
+			else if(items.year4.length == 0 && $scope.totalCredits >= 360) $scope.progress = true;
+			else $scope.progress = false;
+			if(items.year1.length != 0 && items.year2.length != 0 && $scope.passed1 + $scope.passed2 >= 200 && $scope.progress) $scope.passed = true;
+			else if($scope.totalCredits == $scope.totalCreditsPassed && $scope.progress) $scope.passed = true;
+			else $scope.passed = false;
 		})
 	}
 	get();

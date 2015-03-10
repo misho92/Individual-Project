@@ -16,9 +16,15 @@
 			    <div data-ng-include="'header'"></div>
 				<h1 align="center"> Student Specific data</h1>
 				<h3 align="center"> {{id}} {{name}}</h3>
-				<p ng-if="courses1.length!=0"> Total credits: <strong> {{totalCredits}}  </strong></p>
-				<p ng-if="courses1.length!=0"> Credits passed: <strong> {{totalCreditsPassed}} </strong></p>
-				<p ng-if="courses1.length!=0"> GPA: <strong> {{totalGPA}} </strong></p>
+				<p ng-if="courses1.length!=0"> Total credits: <strong> {{totalCredits}}  </strong>
+				<img ng-show="progress" src="/static/tick.png" width="17" height="17" title="Credits amount ok"></i>
+				<img ng-hide="progress" src="/static/x.jpeg" width="17" height="17" title="A minimum of 120 credits per year is required"></i></p>
+				<p ng-if="courses1.length!=0"> Credits passed: <strong> {{totalCreditsPassed}} </strong>
+				<img ng-show="passed" src="/static/tick.png" width="17" height="17" title="Credits passed ok"></i>
+				<img ng-hide="passed" src="/static/x.jpeg" width="17" height="17" title="You do not meet the criteria for passed credits"></i></p>
+				<p ng-if="courses1.length!=0"> GPA: <strong> {{totalGPA}} </strong>
+				<img ng-if="courses1.length!=0 && totalGPA >= 9" src="/static/tick.png" width="17" height="17" title="Total GPA is over or equal to 120"></i>
+				<img ng-if="courses1.length!=0 && totalGPA < 9" src="/static/x.jpeg" width="17" height="17" title="Not enough total GPA. A minimum of 9 overall is required."></i></p>
 				<hr/>
 				<button class="btn btn-default" ng-click="courseCollapse = !courseCollapse">Add Course</button>
 				<hr>
@@ -66,10 +72,12 @@
 						</table>
 						<h3 ng-if="courses1.length==0" type="text">No courses for year 1</h3>
 						<p ng-if="courses1.length!=0"> Credits taken: <strong> {{taken1}} </strong>
-						<img ng-if="courses1.length!=0 && passed1 >= 120" src="/static/tick.png" width="17" height="17" title="Credits passed are over or equal to 120"></i>
-						<img ng-if="courses1.length!=0 && passed1 < 120" src="/static/x.jpeg" width="17" height="17" title="Not enough credits. A minimum of 120 is required."></i></p>
+						<img ng-if="courses1.length!=0 && taken1 >= 120" src="/static/tick.png" width="17" height="17" title="Credits passed are over or equal to 120"></i>
+						<img ng-if="courses1.length!=0 && taken1 < 120" src="/static/x.jpeg" width="17" height="17" title="Not enough credits. A minimum of 120 is required."></i></p>
 						<p ng-if="courses1.length!=0"> Credits passed: <strong> {{passed1}}  </strong></p>
-						<p ng-if="courses1.length!=0"> Average GPA: <strong> {{GPA1}} </strong></p>
+						<p ng-if="courses1.length!=0"> Average GPA: <strong> {{GPA1}} </strong>
+						<img ng-if="courses1.length!=0 && GPA1 >= 9" src="/static/tick.png" width="17" height="17" title="GPA is over or equal to 120"></i>
+						<img ng-if="courses1.length!=0 && GPA1 < 9" src="/static/x.jpeg" width="17" height="17" title="Not enough GPA. A minimum of 9 overall is required."></i></p>
 					</div> 
 				</div>
 				<hr/>
@@ -98,10 +106,12 @@
 						</table>
 						<h3 ng-if="courses2.length==0" type="text">No courses for year 2</h3>
 						<p ng-if="courses2.length!=0"> Credits taken: <strong> {{taken2}} </strong>
-						<img ng-if="courses2.length!=0 && passed2 >= 120" src="/static/tick.png" width="17" height="17" title="Credits passed are over or equal to 120"></i>
-						<img ng-if="courses2.length!=0 && passed2 < 120" src="/static/x.jpeg" width="17" height="17" title="Not enough credits. A minimum of 120 is required."></i></p>
+						<img ng-if="courses2.length!=0 && taken2 >= 120" src="/static/tick.png" width="17" height="17" title="Credits passed are over or equal to 120"></i>
+						<img ng-if="courses2.length!=0 && taken2 < 120" src="/static/x.jpeg" width="17" height="17" title="Not enough credits. A minimum of 120 is required."></i></p>
 						<p ng-if="courses2.length!=0"> Credits passed: <strong> {{passed2}}  </strong></p>
-						<p ng-if="courses2.length!=0"> Average GPA: <strong> {{GPA2}} </strong></p>
+						<p ng-if="courses2.length!=0"> Average GPA: <strong> {{GPA2}} </strong>
+						<img ng-if="courses1.length!=0 && GPA2 >= 9" src="/static/tick.png" width="17" height="17" title="GPA is over or equal to 120"></i>
+						<img ng-if="courses1.length!=0 && GPA2 < 9" src="/static/x.jpeg" width="17" height="17" title="Not enough GPA. A minimum of 9 overall is required."></i></p>
 					</div> 
 				</div>
 				<hr/>
@@ -130,10 +140,12 @@
 						</table>
 						<h3 ng-if="courses3.length==0" type="text">No courses for year 3</h3>
 						<p ng-if="courses3.length!=0"> Credits taken: <strong> {{taken3}} </strong>
-						<img ng-if="courses3.length!=0 && passed3 >= 120" src="/static/tick.png" width="17" height="17" title="Credits passed are over or equal to 120"></i>
-						<img ng-if="courses3.length!=0 && passed3 < 120" src="/static/x.jpeg" width="17" height="17" title="Not enough credits. A minimum of 120 is required."></i></p>
+						<img ng-if="courses3.length!=0 && taken3 >= 120" src="/static/tick.png" width="17" height="17" title="Credits passed are over or equal to 120"></i>
+						<img ng-if="courses3.length!=0 && taken3 < 120" src="/static/x.jpeg" width="17" height="17" title="Not enough credits. A minimum of 120 is required."></i></p>
 						<p ng-if="courses3.length!=0"> Credits passed: <strong> {{passed3}}  </strong></p>
-						<p ng-if="courses3.length!=0"> Average GPA: <strong> {{GPA3}} </strong></p>
+						<p ng-if="courses3.length!=0"> Average GPA: <strong> {{GPA3}} </strong>
+						<img ng-if="courses1.length!=0 && GPA3 >= 9" src="/static/tick.png" width="17" height="17" title="GPA is over or equal to 120"></i>
+						<img ng-if="courses1.length!=0 && GPA3 < 9" src="/static/x.jpeg" width="17" height="17" title="Not enough GPA. A minimum of 9 overall is required."></i></p>
 					</div>
 				</div>
 				<hr/>
@@ -162,10 +174,12 @@
 						</table>
 						<h3 ng-if="courses4.length==0" type="text">No courses for year 4</h3>
 						<p ng-if="courses4.length!=0"> Credits taken: <strong> {{taken4}} </strong>
-						<img ng-if="courses4.length!=0 && passed4 >= 120" src="/static/tick.png" width="17" height="17" title="Credits passed are over or equal to 120"></i>
-						<img ng-if="courses4.length!=0 && passed4 < 120" src="/static/x.jpeg" width="17" height="17" title="Not enough credits. A minimum of 120 is required."></i></p>
+						<img ng-if="courses4.length!=0 && taken4 >= 120" src="/static/tick.png" width="17" height="17" title="Credits passed are over or equal to 120"></i>
+						<img ng-if="courses4.length!=0 && taken4 < 120" src="/static/x.jpeg" width="17" height="17" title="Not enough credits. A minimum of 120 is required."></i></p>
 						<p ng-if="courses4.length!=0"> Credits passed: <strong> {{passed4}}  </strong></p>
-						<p ng-if="courses4.length!=0"> Average GPA: <strong> {{GPA4}} </strong></p>
+						<p ng-if="courses4.length!=0"> Average GPA: <strong> {{GPA4}} </strong>
+						<img ng-if="courses1.length!=0 && GPA4 >= 9" src="/static/tick.png" width="17" height="17" title="GPA is over or equal to 120"></i>
+						<img ng-if="courses1.length!=0 && GPA4 < 9" src="/static/x.jpeg" width="17" height="17" title="Not enough GPA. A minimum of 9 overall is required."></i></p>
 					</div> 
 				</div>
 		    </form>      
