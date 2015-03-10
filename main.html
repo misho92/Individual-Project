@@ -14,8 +14,8 @@
 		    <form ng-controller="MainController">
 			<div data-ng-include="'header'"></div>
 			<h1 align="center"> Welcome to Advisor System Support</h1>
-			<h3 align="center"> My list of students</h3>
-			<table align="center">
+			<h3 ng-show="students.length != 0" align="center"> My list of students</h3>
+			<table ng-show="students.length != 0" align="center">
 				<thead>
 					<tr>
 						<th>Id</th> 
@@ -31,6 +31,9 @@
 					</tr>
 				</tbody>
 			</table>
+			<div ng-show="students.length == 0" >
+				<h3 align="center"> You don't have any students yet</h3>
+			</div>
 		    </form>      
 	    </div>
 	</body>

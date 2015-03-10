@@ -75,6 +75,37 @@ class Students(flask.views.MethodView):
             "students": [{ "id": item["id"] + item["surname"][:1], "advisor": item["advisor"], "name": item["first_name"] + " " + item["surname"], "degree": item["degree_type"] + " " + item["degree_course"]} for item in students]
         })
 		
+class Admin(flask.views.MethodView):
+
+	def post(self):
+		conn = sqlite3.connect("Project.sqlite")
+		c = conn.cursor()
+		args = json.loads(request.data)
+		c.execute("INSERT INTO user(email,password,title,first_name,surname,department) VALUES (?,?,?,?,?,?)", (args["email"], generate_password_hash(args["password"]), args["title"], args["first"], args["surname"], args["department"]))
+		conn.commit()
+		return jsonify({ "success": True })
+		
+	def put(self):
+		conn = sqlite3.connect("Project.sqlite")
+		c = conn.cursor()
+		args = json.loads(request.data)
+		c.execute("DELETE FROM user WHERE email = ?", (args["email"],))
+		conn.commit()
+		return jsonify({ "success": True })
+
+	def get(self):
+		conn = sqlite3.connect("Project.sqlite")
+		c = conn.cursor()
+		c.execute("SELECT title,first_name FROM user WHERE email = ?", (userEmail,))
+		username = c.fetchone()
+		c.execute("SELECT * FROM user WHERE email != ?", (userEmail,))
+		advisors = [dict(email=str(row[0]), title=str(row[2]), first_name=str(row[3]), surname=str(row[4]), department=str(row[5])) for row in c.fetchall()]
+		return jsonify({
+            "success": True,
+            "username": username,
+            "advisors": [{ "email": item["email"], "title": item["title"], "name": item["first_name"] + " " + item["surname"], "department": item["department"]} for item in advisors]
+        })
+		
 class Data(flask.views.MethodView):
 
     def get(self,id=None):

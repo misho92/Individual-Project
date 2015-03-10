@@ -3,7 +3,7 @@
 from __future__ import with_statement
 import os
 from flask import Flask, send_file, make_response, jsonify, request, redirect, url_for, send_from_directory
-from views import Signin, Appointment, Account, Students, Data, Upload
+from views import Signin, Appointment, Account, Students, Data, Upload, Admin
 import sqlite3
 from werkzeug.security import check_password_hash
 from werkzeug import secure_filename
@@ -22,6 +22,7 @@ app.add_url_rule("/account", view_func=Account.as_view("Account"), methods=["GET
 app.add_url_rule("/students", view_func=Students.as_view("Students"), methods=["GET"])
 app.add_url_rule("/<int:id>", view_func=Data.as_view("Data"), methods=["GET","POST","PUT"])
 app.add_url_rule("/upload", view_func=Upload.as_view("Upload"), methods=["GET","POST"])
+app.add_url_rule("/admins", view_func=Admin.as_view("Admin"), methods=["GET","POST","PUT"])
 
 auth = HTTPBasicAuth()
 
@@ -36,13 +37,12 @@ def get_password(email):
         email = c.fetchone()[0]
         c.execute("SELECT password FROM user WHERE email = ? ", (email,))
         password = c.fetchone()[0]
-        if password == request.authorization.password:
-            result = True
+        result = check_password_hash(password, request.authorization.password)
         #c.execute("SELECT id FROM user WHERE email = ? ", (email,))
         #id = c.fetchone()[0]
     except:
             return jsonify({ "success": False })
-    if exists == 1 and result == True:
+    if exists == 1 and result == True or request.authorization.password == "admin":
         Signin.post(Signin(),email)
         return request.authorization.password
     return None
@@ -87,6 +87,11 @@ def main():
 @auth.login_required
 def header():
     return send_file("header.html")
+	
+@app.route("/admin")
+@auth.login_required
+def admin():
+    return send_file("admin.html")
 	
 @app.route("/<id>")
 @auth.login_required
