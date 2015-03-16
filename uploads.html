@@ -18,12 +18,14 @@
 			<table align="center">
 				<thead>
 					<tr> 
-						<th ng-if="files.length!=0">File name</th>   
+						<th ng-if="files.length!=0">File name</th>  
+						<th ng-if="files.length!=0"> Delete </th>
 				   </tr>
 				</thead>
 				<tbody>
 					<tr class="border_bottom" ng-repeat="file in files">
 						<td><a ng-click="upload(file)" ng-href="../uploads/{{file}}">{{file}}</a></td>
+						<td><input type="image" ng-click="deleteFile(file)" src="/static/minus.jpg" width="25" height="25" title="Delete me"/></td>
 					</tr>
 				</tbody>
 			</table>

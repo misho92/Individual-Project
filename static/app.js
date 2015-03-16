@@ -70,6 +70,7 @@ app.factory("AdminStudent", ["$resource", function($resource) {
 	
 app.factory("Upload", ["$resource", function($resource) {
 	   return $resource("/upload", null,{
+		   "deleteFile": {method: "PUT"},
 	   });
 	}]);
 	
@@ -468,7 +469,7 @@ app.controller("DataController",["$scope","$window", "$location", "Data", "$moda
 			else if(items.year3.length == 0 && $scope.totalCredits >= 240) $scope.progress = true;
 			else if(items.year4.length == 0 && $scope.totalCredits >= 360) $scope.progress = true;
 			else $scope.progress = false;
-			if(items.year1.length != 0 && items.year2.length != 0 && $scope.passed1 + $scope.passed2 >= 200 && $scope.progress) $scope.passed = true;
+			if(items.year1.length != 0 && items.year2.length != 0 && $scope.passed1 + $scope.passed2 >= 200 && f$scope.progress) $scope.passed = true;
 			else if($scope.totalCredits == $scope.totalCreditsPassed && $scope.progress) $scope.passed = true;
 			else $scope.passed = false;
 		})
@@ -506,6 +507,15 @@ app.controller("UploadController",["$scope","$window", "$timeout", "Upload", fun
 		$scope.username = items.username[0] + " " + items.username[1];
 		$scope.files = items.files;
 	})
+	
+	$scope.deleteFile = function(file){
+		Upload.deleteFile({},{file: file},function(items){
+			if(items.success) 
+			  $scope.files.splice($scope.files.indexOf(app), 1);
+			else 
+			  alert("Error in deleting");
+		})
+	};
 	
   /* var percentage = 100;  
   $scope.max = percentage;

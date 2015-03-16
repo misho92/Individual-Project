@@ -21,7 +21,7 @@ app.add_url_rule("/appointment", view_func=Appointment.as_view("Appointment"), m
 app.add_url_rule("/account", view_func=Account.as_view("Account"), methods=["GET","PUT"])
 app.add_url_rule("/students", view_func=Students.as_view("Students"), methods=["GET"])
 app.add_url_rule("/<int:id>", view_func=Data.as_view("Data"), methods=["GET","POST","PUT"])
-app.add_url_rule("/upload", view_func=Upload.as_view("Upload"), methods=["GET","POST"])
+app.add_url_rule("/upload", view_func=Upload.as_view("Upload"), methods=["GET","POST","PUT"])
 app.add_url_rule("/advisor", view_func=Advisor.as_view("Advisor"), methods=["GET","POST","PUT"])
 app.add_url_rule("/adminStudent", view_func=adminStudent.as_view("adminStudent"), methods=["GET","POST","PUT"])
 

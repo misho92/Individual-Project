@@ -271,6 +271,14 @@ class Upload(flask.views.MethodView):
 			"username": username,
 			"files": files
         })
+	
+	def put(self):
+		args = json.loads(request.data)
+		file = args["file"]
+		os.remove("uploads/" + file)
+		return jsonify({
+            "success": True,
+        })
 	uploadFolder = "uploads/"
 	extensions = (["txt", "pdf", "png", "jpg", "jpeg", "gif"])
 
