@@ -1,27 +1,7 @@
-#div {
-    	text-align: center;
-    	width: 250px;
-		position: absolute;
-		top:0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		margin: auto;
-	}
-	
 #division {
     	text-align: center;
 	}
 	
-#innerdiv {
-    	text-align: center;
-	}
-	
-#label{
-		text-align: right;
-		font-size: 18px;
-	}
-
 #signout{
 		position: absolute; right: 10px;
 	}
@@ -29,48 +9,7 @@
 h1{
 		line-height: 140px
 	}
-	
-#data {
-    	text-align: center;
-    	width: 250px;
-		position: relative;
-		top: 100;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		margin: auto;
-	}
-	
-#back {
-    	text-align: center;
-    	width: 200px;
-		position: absolute;
-		top: 100;
-		bottom: 100;
-		left: 0;
-		right: 0;
-		margin: auto;
-	}
-	
-.left {
-    float: left;
-    width: 50%;
-}
-
-.right {
-    float: right;
-    width: 50%;
-}
 
 tr.border_bottom td {
   border-bottom:1pt solid black;
-}
-
-.progress { 
-  height: 3em;
-  i { line-height: 3.5em; }
-}
-
-.progress-bar { 
-  transition: width 1s ease-in-out; 
 }

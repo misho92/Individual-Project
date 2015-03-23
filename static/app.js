@@ -1,4 +1,4 @@
-//app settings for routing and declaring which html file to invoke when a give url is entered and which controller is in charge
+//app settings for routing and declaring which html file to invoke when a given url is entered and which controller is in charge
 var app = angular.module("app",["ngRoute","ngResource","ui.bootstrap"])
 .config(["$routeProvider","$locationProvider", function($routeProvider,$locationProvider) {
     $routeProvider
@@ -39,6 +39,7 @@ var app = angular.module("app",["ngRoute","ngResource","ui.bootstrap"])
         $locationProvider.html5Mode(true);
 }])
 
+//register all the objects with their repsective functions and api endpoints which perform the http request in a RESTful manner
 app.factory("Appointment", ["$resource", function($resource) {
 	   return $resource("/appointment", null,{
 			"addAppointment": {method: "POST"},
@@ -87,6 +88,7 @@ app.factory("Account", ["$resource", function($resource) {
 	   });
 	}]);
 	
+//register all the controllers and perform the operation they are responsible for
 app.controller("ModalControlller", ["$scope", "$modalInstance" ,"$window", function ($scope, $modalInstance, array,$window) {
 	
 	if(array.array.title){
@@ -103,6 +105,7 @@ app.controller("ModalControlller", ["$scope", "$modalInstance" ,"$window", funct
 		$scope.modalngModel = array.array.app.date
 	}
 	
+//save data on a modal pop up
   $scope.save = function () {
 	if(array.array.title){
 		array = {title: $scope.modalTitle, first_name: $scope.modalFirst_name, surname: $scope.modalSurname, department: $scope.modalDepartment, number: $scope.modalNumber, DoB: $scope.modalDoB}
@@ -133,9 +136,9 @@ app.controller("ConfirmModalControlller", ["$scope", "$modalInstance" ,"$window"
   };
 }]);
 
-
 app.controller("AppointmentController",["$scope","$window", "Appointment", "$modal", "$log", function ($scope,$window,Appointment,$modal, $log){
 
+//confirm an appointment and send the data back as a json
 	$scope.confirmAppointment = function(date,venue,description){
 		Appointment.confirm({},{edit: "confirm",date: date, venue: venue, description: description},function(items){
 			if(items.success){
@@ -151,6 +154,7 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
     	$scope.status = status;
     }
 
+//open modal
 	$scope.open = function (size) {
     var modal = $modal.open({
       templateUrl: "modal",
@@ -187,6 +191,7 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
     });
   };
   
+//routing handling of the navbar
 	$scope.go = function(param){
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
@@ -199,12 +204,14 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
 	$scope.signout = function(){
 		$window.location.href = "/signout";  
 	};
-	
+
+//calendar options
         $scope.dateOptions = {
             minDate: 0,
             maxDate: "+12M"
         };
 	
+//get appointment data and offload it
 	function get(){
 		Appointment.get(function(items){
 		if(items.username[1] == "Admin") $scope.admin = true;
@@ -215,6 +222,7 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
 	
 	get();
 	
+//add appointment and send the data as json
 	$scope.addApp = function(){
 		if(!$scope.ngModel) {
 			alert("Please insert date"); 
@@ -233,6 +241,7 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
 		}
 	}
 	
+//delete appointment and send data as json
 	$scope.deleteApp = function(app,date,venue,description,status){
 		Appointment.deleteSingle({},{edit: "deleteOne",date: date, venue: venue, description: description,status: status},function(items){
 			if(items.success) 
@@ -246,6 +255,7 @@ app.controller("AppointmentController",["$scope","$window", "Appointment", "$mod
 
 app.controller("AdminController",["$scope","$window", "Advisor", function ($scope,$window,Advisor){
 	
+//routing handling of the navbar
 	$scope.go = function(param){
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
@@ -259,13 +269,15 @@ app.controller("AdminController",["$scope","$window", "Advisor", function ($scop
 		$window.location.href = "/signout";  
 	};
 	
+//add advisor and send data as json
 	$scope.add = function (email,password,title,first,surname,department) {
 		Advisor.addAdvisor({email: email, password: password, title: title, first: first, surname: surname, department: department},function(items){
 				if(!items.success)	alert("Adding of advisor failed");
 			})
 		get();
 	}
-	
+
+//offload json data
 	function get(){
 		Advisor.get(function(items){
 			if(items.username[1] == "Admin") $scope.admin = true;
@@ -275,6 +287,7 @@ app.controller("AdminController",["$scope","$window", "Advisor", function ($scop
 	}
 	get();
 	
+//delete advisor and send data as json
 	$scope.delete = function (email) {
 		Advisor.deleteOne({email: email},function(items){
 				if(!items.success)	alert("Deleting of advisor failed");
@@ -286,6 +299,7 @@ app.controller("AdminController",["$scope","$window", "Advisor", function ($scop
 
 app.controller("AdminStudentController",["$scope","$window", "AdminStudent", function ($scope,$window,AdminStudent){
 	
+//routing handling of the navbar
 	$scope.go = function(param){
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
@@ -298,14 +312,16 @@ app.controller("AdminStudentController",["$scope","$window", "AdminStudent", fun
 	$scope.signout = function(){
 		$window.location.href = "/signout";  
 	};
-	
+
+//add student and send data as json
 	$scope.add = function (id,first,surname,degreeCourse,degreeType) {
 		AdminStudent.addStudent({id: id, advisor: $scope.advisor, first: first, surname: surname, degreeCourse: degreeCourse, degreeType: degreeType},function(items){
 				if(!items.success)	alert("Adding of student failed");
 			})
 		get();
 	}
-	
+
+//offload data
 	function get(){
 		AdminStudent.get(function(items){
 			if(items.username[1] == "Admin") $scope.admin = true;
@@ -320,6 +336,7 @@ app.controller("AdminStudentController",["$scope","$window", "AdminStudent", fun
     	$scope.advisor = advisor;
     }
 	
+//detele student and send data as json
 	$scope.delete = function (id) {
 		AdminStudent.deleteOne({id: id},function(items){
 				if(!items.success)	alert("Deleting of student failed");
@@ -331,6 +348,7 @@ app.controller("AdminStudentController",["$scope","$window", "AdminStudent", fun
 
 app.controller("AccountController",["$scope","$window", "Account", "$modal", "$log", function ($scope,$window,Account,$modal,$log){
 
+//open modal
 	$scope.open = function (title, first_name, surname, department, number, DoB) {
     var modal = $modal.open({
       templateUrl: "modal",
@@ -354,6 +372,7 @@ app.controller("AccountController",["$scope","$window", "Account", "$modal", "$l
     });
   };
 	
+//routing handling of the navbar
 	$scope.go = function(param){
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
@@ -367,6 +386,7 @@ app.controller("AccountController",["$scope","$window", "Account", "$modal", "$l
 		$window.location.href = "/signout";  
 	};
 	
+//get user specific data
 	function get(){
 		Account.get(function(items){
 			if(items.username[1] == "Admin") $scope.admin = true;
@@ -383,15 +403,17 @@ app.controller("AccountController",["$scope","$window", "Account", "$modal", "$l
 }])
 
 app.controller("DataController",["$scope","$window", "$location", "Data", "$modal", "$log", function ($scope,$window,$location,Data,$modal,$log){
-	
+	//get the id of a student from the url
 	id = $location.$$path.slice(1,8);
 	
+////delete course
 	$scope.deleteRecord = function(course,year){
 		Data.deleteCourse({id:id},{course: course.course},function(items){
 				get();
 			})
 	}
-	
+
+//set the colleges in a dropdown menu
 	$scope.colleges = ["College of Arts","College of Medical, Veterinary and Life Sciences","College of Science and Engineering","College of Social Sciences"];
 	
 	$scope.College = function(college) {
@@ -404,6 +426,7 @@ app.controller("DataController",["$scope","$window", "$location", "Data", "$moda
     	$scope.year = year;
     }
 	
+//fill in the grades array
 	$scope.grades = [];
 	
 	for(i = 1; i <= 22; i++){
@@ -414,6 +437,7 @@ app.controller("DataController",["$scope","$window", "$location", "Data", "$moda
     	$scope.grade = grade;
     }
 	
+//add course record and send data as json
 	$scope.addRecord = function (course,credits,grade,college,year) {
 		Data.addCourse({id:id},{course: course, credits: credits, grade: grade, department: college, year: year},function(items){
 				if(!items.success)	alert("Adding of item failed");
@@ -426,6 +450,7 @@ app.controller("DataController",["$scope","$window", "$location", "Data", "$moda
 		$scope.year = "";
   };
 
+//routing handling of the navbar
 	$scope.go = function(param){
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
@@ -439,7 +464,10 @@ app.controller("DataController",["$scope","$window", "$location", "Data", "$moda
 		$window.location.href = "/signout";  
 	};
 	
+//manage the collapsing buttons
 	$scope.isCollapsed1 = $scope.isCollapsed2 = $scope.isCollapsed3 = $scope.isCollapsed4 = $scope.courseCollapse = true;
+	
+//offload data
 	function get(){
 		Data.get({id:id},function(items){
 			$scope.id = id;
@@ -478,6 +506,7 @@ app.controller("DataController",["$scope","$window", "$location", "Data", "$moda
 }])
 app.controller("MainController",["$scope","$window","Students", function ($scope,$window,Students) {
 
+//routing handling of the navbar
 	$scope.go = function(param){
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
@@ -493,6 +522,8 @@ app.controller("MainController",["$scope","$window","Students", function ($scope
 	};
 	
 	$scope.header = {name: "header.html", url: "header.html"};
+	
+//offload student data
 	Students.get(function(items){
 		if(items.username[1] == "Admin") $scope.admin = true;
 		$scope.students = items.students;
@@ -502,12 +533,14 @@ app.controller("MainController",["$scope","$window","Students", function ($scope
 
 app.controller("UploadController",["$scope","$window", "$timeout", "Upload", function ($scope,$window,$timeout,Upload) {
 	
+//get the list of uploads
 	Upload.get(function(items){
 		if(items.username[1] == "Admin") $scope.admin = true;
 		$scope.username = items.username[0] + " " + items.username[1];
 		$scope.files = items.files;
 	})
-	
+
+//delete a particular document
 	$scope.deleteFile = function(file){
 		Upload.deleteFile({},{file: file},function(items){
 			if(items.success) 
@@ -517,14 +550,7 @@ app.controller("UploadController",["$scope","$window", "$timeout", "Upload", fun
 		})
 	};
 	
-  /* var percentage = 100;  
-  $scope.max = percentage;
-  $scope.min = 0;
-  
-  $timeout(function(){
-    $scope.progressValue = percentage;
-  }, 200);
-	*/
+//routing handling of the navbar
 	$scope.go = function(param){
 		if(param === "app") $window.location.href = "/appointments";
 		else if(param === "account" ) $window.location.href = "/myaccount";
@@ -534,14 +560,14 @@ app.controller("UploadController",["$scope","$window", "$timeout", "Upload", fun
 		else $window.location.href = "/";  
 	};
 	
-	$scope.files = ["index.png"];
-	
+//navigate to the upload once the attachment has been successful
 	$scope.upload = function(param){
 		$window.location.href = "/uploads/" + param;  
 	};
 	
 }])
 
+//custom directive for the datepicker option
 var datepicker = angular.module("app1",["app","ui.date"])
 datepicker.directive("customDatepicker",function($compile){
     return {

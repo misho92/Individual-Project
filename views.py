@@ -1,6 +1,7 @@
-# this file consists of several classes. Each of them has a couple of functions which corresponds to the rest calls and execute some database activities
+# this file consists of several classes. Each of them has a couple of functions which corresponds to the rest calls/requests and execute some database activities
 # based on the rest verb used
 
+#import section
 from flask import request, jsonify, url_for, redirect
 import os
 import sqlite3
@@ -14,8 +15,10 @@ from werkzeug import secure_filename
 
 userEmail = ""
 
+#appointment class executes all the specific request associated
 class Appointment(flask.views.MethodView):
 
+#get appointment data and send it as json
     def get(self):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
@@ -23,13 +26,13 @@ class Appointment(flask.views.MethodView):
 		username = c.fetchone()
 		c.execute("SELECT date, venue, description, status FROM appointment WHERE email = ? ORDER BY strftime('%s', date)", (userEmail,))
 		apps = [dict(date=str(row[0]), venue=str(row[1]), description=str(row[2]), status=str(row[3])) for row in c.fetchall()]
-		#os.remove(os.getcwd() + "/uploads/calendar.txt")
 		return jsonify({
             "success": True,
             "username": username,
             "appointments": [{ "date": item["date"], "venue": item["venue"], "description": item["description"], "status": item["status"] } for item in apps]
         })
 		
+#add an appointment in the database
     def post(self):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
@@ -38,6 +41,7 @@ class Appointment(flask.views.MethodView):
 		conn.commit()
 		return jsonify({ "success": True })
 		
+#delete or update a specific appointment based on some payload data
     def put(self):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
@@ -53,6 +57,7 @@ class Appointment(flask.views.MethodView):
 		conn.commit()
 		return jsonify({ "success": True })
 	
+#delete all appointments for the particular user
     def delete(self):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
@@ -60,8 +65,10 @@ class Appointment(flask.views.MethodView):
 		conn.commit()
 		return jsonify({ "success": True })
 		
+#stundet class executes all the specific request associated
 class Students(flask.views.MethodView):
 
+#get student's data and send is as json
     def get(self):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
@@ -75,24 +82,10 @@ class Students(flask.views.MethodView):
             "students": [{ "id": item["id"] + item["surname"][:1], "advisor": item["advisor"], "name": item["first_name"] + " " + item["surname"], "degree": item["degree_type"] + " " + item["degree_course"]} for item in students]
         })
 		
+#advisor class executes all the specific request associated
 class Advisor(flask.views.MethodView):
 
-	def post(self):
-		conn = sqlite3.connect("Project.sqlite")
-		c = conn.cursor()
-		args = json.loads(request.data)
-		c.execute("INSERT INTO user(email,password,title,first_name,surname,department) VALUES (?,?,?,?,?,?)", (args["email"], generate_password_hash(args["password"]), args["title"], args["first"], args["surname"], args["department"]))
-		conn.commit()
-		return jsonify({ "success": True })
-		
-	def put(self):
-		conn = sqlite3.connect("Project.sqlite")
-		c = conn.cursor()
-		args = json.loads(request.data)
-		c.execute("DELETE FROM user WHERE email = ?", (args["email"],))
-		conn.commit()
-		return jsonify({ "success": True })
-
+#get advisor's data and send it as json
 	def get(self):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
@@ -105,26 +98,31 @@ class Advisor(flask.views.MethodView):
             "username": username,
             "advisors": [{ "email": item["email"], "title": item["title"], "name": item["first_name"] + " " + item["surname"], "department": item["department"]} for item in advisors]
         })
-		
-class adminStudent(flask.views.MethodView):
 
+#add an advisor
 	def post(self):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
 		args = json.loads(request.data)
-		c.execute("INSERT INTO student(id,advisor,first_name,surname,degree_course,degree_type) VALUES (?,?,?,?,?,?)", (args["id"], args["advisor"][0], args["first"], args["surname"], args["degreeCourse"], args["degreeType"]))
+		c.execute("INSERT INTO user(email,password,title,first_name,surname,department) VALUES (?,?,?,?,?,?)", (args["email"], generate_password_hash(args["password"]), args["title"], args["first"], args["surname"], args["department"]))
 		conn.commit()
 		return jsonify({ "success": True })
-		
+
+#delete an advisor
 	def put(self):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
 		args = json.loads(request.data)
-		c.execute("DELETE FROM student WHERE id = ?", (args["id"],))
+		c.execute("DELETE FROM user WHERE email = ?", (args["email"],))
 		conn.commit()
 		return jsonify({ "success": True })
 
-	def get(self):
+		
+#adminstudent class executes all the specific request associated
+class adminStudent(flask.views.MethodView):
+
+#get admin student's data and send it as json
+    def get(self):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
 		c.execute("SELECT title,first_name FROM user WHERE email = ?", (userEmail,))
@@ -139,9 +137,30 @@ class adminStudent(flask.views.MethodView):
             "students": [{ "id": item["id"], "advisor": item["advisor"], "name": item["first_name"] + " " + item["surname"], "degree_course": item["degree_course"], "degree_type": item["degree_type"]} for item in students],
 			"advisors": advisors
         })
+
+#add student into database
+    def post(self):
+		conn = sqlite3.connect("Project.sqlite")
+		c = conn.cursor()
+		args = json.loads(request.data)
+		c.execute("INSERT INTO student(id,advisor,first_name,surname,degree_course,degree_type) VALUES (?,?,?,?,?,?)", (args["id"], args["advisor"][0], args["first"], args["surname"], args["degreeCourse"], args["degreeType"]))
+		conn.commit()
+		return jsonify({ "success": True })
+
+#delete student
+    def put(self):
+		conn = sqlite3.connect("Project.sqlite")
+		c = conn.cursor()
+		args = json.loads(request.data)
+		c.execute("DELETE FROM student WHERE id = ?", (args["id"],))
+		conn.commit()
+		return jsonify({ "success": True })
+
 		
+#data class executes all the specific request associated
 class Data(flask.views.MethodView):
 
+#get all the academics record for a specific student and send it as json
     def get(self,id=None):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
@@ -206,6 +225,7 @@ class Data(flask.views.MethodView):
 			"totalGPA": totalGPA
         })
 
+#delete a course from the database
     def put(self,id=None):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
@@ -214,6 +234,7 @@ class Data(flask.views.MethodView):
 		conn.commit()
 		return jsonify({ "success": True })
 
+#add a course record
     def post(self,id=None):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
@@ -222,10 +243,10 @@ class Data(flask.views.MethodView):
 		conn.commit()
 		return jsonify({ "success": True })
 
-
-
+#account class executes all the specific request associated
 class Account(flask.views.MethodView):
 
+#get account data and send is as json
 	def get(self):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
@@ -238,6 +259,8 @@ class Account(flask.views.MethodView):
 			"username": username,
 			"user": user
         })
+		
+#update account's data
 	def put(self):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
@@ -252,14 +275,17 @@ class Account(flask.views.MethodView):
 		conn.commit()
 		return jsonify({ "success": True })
 		
+#the sign in process
 class Signin(flask.views.MethodView):
     
     def post(self,email):
         global userEmail 
         userEmail = email
 
+#upload class executes all the specific request associated
 class Upload(flask.views.MethodView):
 
+#get the uploads and send it as json
 	def get(self):
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
@@ -272,6 +298,7 @@ class Upload(flask.views.MethodView):
 			"files": files
         })
 	
+#delete an attachment
 	def put(self):
 		args = json.loads(request.data)
 		file = args["file"]
@@ -279,12 +306,15 @@ class Upload(flask.views.MethodView):
 		return jsonify({
             "success": True,
         })
+
+#set upload options and extensions allowed
 	uploadFolder = "uploads/"
 	extensions = (["txt", "pdf", "png", "jpg", "jpeg", "gif"])
 
 	def allowed_file(self,filename):
 		return "." in filename and filename.rsplit(".", 1)[1] in Upload.extensions
 
+#attach a document
 	def post(self):
 		file = request.files["file"]
 		if file and Upload.allowed_file(self,file.filename):

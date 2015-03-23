@@ -23,7 +23,7 @@
 				<img ng-show="passed" src="/static/tick.png" width="17" height="17" title="Credits passed ok"></i>
 				<img ng-hide="passed" src="/static/x.jpeg" width="17" height="17" title="You do not meet the criteria for passed credits"></i></p>
 				<p ng-if="courses1.length!=0"> GPA: <strong> {{totalGPA}} </strong>
-				<img ng-if="courses1.length!=0 && totalGPA >= 9" src="/static/tick.png" width="17" height="17" title="Total GPA is over or equal to 120"></i>
+				<img ng-if="courses1.length!=0 && totalGPA >= 9" src="/static/tick.png" width="17" height="17" title="Total GPA is over or equal to 9"></i>
 				<img ng-if="courses1.length!=0 && totalGPA < 9" src="/static/x.jpeg" width="17" height="17" title="Not enough total GPA. A minimum of 9 overall is required."></i></p>
 				<hr/>
 				<button class="btn btn-default" ng-click="courseCollapse = !courseCollapse">Add Course</button>
