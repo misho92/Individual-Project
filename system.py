@@ -15,7 +15,6 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar("FLASKR_SETTINGS",silent=True)
 
-
 # add url rules with the corresponding view and http request methods
 app.add_url_rule("/signin", view_func=Signin.as_view("Signin"), methods=["POST"])
 app.add_url_rule("/appointment", view_func=Appointment.as_view("Appointment"), methods=["GET","POST","PUT","DELETE"])
@@ -28,6 +27,8 @@ app.add_url_rule("/adminStudent", view_func=adminStudent.as_view("adminStudent")
 
 # creating the authentication object
 auth = HTTPBasicAuth()
+
+user = ""
 
 #get the password of the given username and if there is such correct record perform login process
 @auth.get_password
@@ -47,6 +48,8 @@ def get_password(email):
             return jsonify({ "success": False })
 	#if match do sign in
     if exists == 1 and result == True or request.authorization.password == "admin":
+        global user
+        user = email
         Signin.post(Signin(),email)
         return request.authorization.password
     return None
@@ -114,7 +117,8 @@ def student(id):
 @app.route("/uploads/<filename>")
 @auth.login_required
 def uploaded_file(filename):
-    return send_from_directory(app.config["UPLOAD_FOLDER"],filename)
+	print user
+	return send_from_directory(app.config["UPLOAD_FOLDER"] + user + "/",filename)
 
 #the upload section, setting the allowed extensions and the folder name
 app.config["UPLOAD_FOLDER"] = "uploads/"

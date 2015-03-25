@@ -287,11 +287,13 @@ class Upload(flask.views.MethodView):
 
 #get the uploads and send it as json
 	def get(self):
+		if not os.path.exists(Upload.uploadFolder + userEmail + "/"):
+			os.makedirs(Upload.uploadFolder + userEmail + "/")
 		conn = sqlite3.connect("Project.sqlite")
 		c = conn.cursor()
 		c.execute("SELECT title,first_name FROM user WHERE email = ?", (userEmail,))
 		username = c.fetchone()
-		files = os.listdir(os.getcwd() + "/uploads/")
+		files = os.listdir(os.getcwd() + "/uploads/" + userEmail + "/")
 		return jsonify({
             "success": True,
 			"username": username,
@@ -302,7 +304,7 @@ class Upload(flask.views.MethodView):
 	def put(self):
 		args = json.loads(request.data)
 		file = args["file"]
-		os.remove("uploads/" + file)
+		os.remove("uploads/" + userEmail + "/" + file)
 		return jsonify({
             "success": True,
         })
@@ -319,6 +321,6 @@ class Upload(flask.views.MethodView):
 		file = request.files["file"]
 		if file and Upload.allowed_file(self,file.filename):
 			filename = secure_filename(file.filename)
-			file.save(os.path.join(Upload.uploadFolder, filename))
+			file.save(os.path.join(Upload.uploadFolder + userEmail + "/",filename))
 			return redirect(url_for("uploaded_file",
 									filename=filename))

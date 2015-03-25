@@ -534,20 +534,23 @@ app.controller("MainController",["$scope","$window","Students", function ($scope
 app.controller("UploadController",["$scope","$window", "$timeout", "Upload", function ($scope,$window,$timeout,Upload) {
 	
 //get the list of uploads
-	Upload.get(function(items){
-		if(items.username[1] == "Admin") $scope.admin = true;
-		$scope.username = items.username[0] + " " + items.username[1];
-		$scope.files = items.files;
-	})
+	function get(){
+		Upload.get(function(items){
+			if(items.username[1] == "Admin") $scope.admin = true;
+			$scope.username = items.username[0] + " " + items.username[1];
+			$scope.files = items.files;
+		})
+	}
+
+	get();
 
 //delete a particular document
 	$scope.deleteFile = function(file){
 		Upload.deleteFile({},{file: file},function(items){
-			if(items.success) 
-			  $scope.files.splice($scope.files.indexOf(app), 1);
-			else 
-			  alert("Error in deleting");
+			if(items.success) $scope.files.splice($scope.files.indexOf(app), 1);
+			else alert("Error in deleting");
 		})
+		get();
 	};
 	
 //routing handling of the navbar
